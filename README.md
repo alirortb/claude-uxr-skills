@@ -1,4 +1,4 @@
-# claude-skills
+# claude-uxr-skills
 
 Personal [Claude Code](https://claude.com/claude-code) skills for UXR/ReOps work at Miro.
 
@@ -17,16 +17,16 @@ This repo is **personal R&D space** for skills I use day-to-day. It **complement
 Once the skills installer is configured:
 
 ```
-npx skills add alirortb/claude-skills
+npx skills add alirortb/claude-uxr-skills
 ```
 
 Or clone and symlink each skill folder manually into `~/.claude/skills/`:
 
 ```
-git clone https://github.com/alirortb/claude-skills.git ~/dev/claude-skills
-ln -s ~/dev/claude-skills/research-docs ~/.claude/skills/research-docs
-ln -s ~/dev/claude-skills/prototype-audit ~/.claude/skills/prototype-audit
-ln -s ~/dev/claude-skills/eow-summary ~/.claude/skills/eow-summary
+git clone https://github.com/alirortb/claude-uxr-skills.git ~/dev/claude-uxr-skills
+ln -s ~/dev/claude-uxr-skills/research-docs ~/.claude/skills/research-docs
+ln -s ~/dev/claude-uxr-skills/prototype-audit ~/.claude/skills/prototype-audit
+ln -s ~/dev/claude-uxr-skills/eow-summary ~/.claude/skills/eow-summary
 ```
 
 ## Design principles
