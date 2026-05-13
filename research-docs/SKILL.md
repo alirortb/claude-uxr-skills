@@ -182,6 +182,18 @@ Write to `<study-name>-guide.md`.
 - "Anything we didn't cover that we should have?"
 - "What surprised you in this conversation?"
 - Thank you + next steps + incentive logistics
+
+---
+
+## Moderation self-check
+
+This guide was drafted against the [moderation rubric](#moderation-rubric-uxr-101--june-2025) below. Before piloting, re-read each lead question and probe against the three rules:
+
+- [ ] **Open, not closed** — no yes/no openers; questions start with who/what/when/how/why, "walk me through", "tell me about", "describe"
+- [ ] **Neutral, not leading** — no "don't you think…", no embedded judgments, no validation-seeking phrasing
+- [ ] **Past or present, not hypothetical** — anchored to a real event ("the last time you…") over a guess about the future ("would you…")
+
+If any question fails a check, rewrite it using the DO patterns in the rubric below.
 ```
 
 ### Rules
@@ -189,6 +201,7 @@ Write to `<study-name>-guide.md`.
 - One section per research question; cap at 4-5 sections for a 45-min session.
 - Lead questions must be **open** (no yes/no, no leading).
 - Probes follow the "tell me about a time…" pattern over hypotheticals.
+- Apply the moderation rubric below while drafting. Every lead question and probe must pass the three checks (open / neutral / past-or-present) before it lands in the output.
 
 ### Handoff footer (always append)
 
@@ -280,5 +293,61 @@ Quote conventions follow: `github.com/miroapp-dev/uxr-skills` (if applicable)
 - Run contradiction or confidence checks → use `/customer-insights`
 - Push to Miro / Great Question / Gong → manual paste, or future MCP integration
 - Maintain a study folder structure → write where the user is; don't impose layout
+- Live moderation coaching / line-by-line critique of an existing guide → not in scope today. If demand emerges, split into a `/moderation-coach` skill rather than adding a fourth mode here.
 
 If the user asks for any of the above, redirect to the appropriate skill or tool rather than attempting it.
+
+---
+
+## Moderation rubric (UXR 101 — June 2025)
+
+Source: UXR 101 *How to moderate interviews* training, June 2025. Used by `guide` mode while drafting questions and again at the end as a self-check appendix. Three rules + question-type cheatsheet + canonical DO/DON'T pairs.
+
+### The three rules
+
+1. **Stay natural** — relaxed dialogue, like talking to a colleague over coffee. People open up when it feels casual; you get more honest stories and they forget they're being interviewed.
+2. **Stay neutral** — your reactions, opinions, and phrasing can steer responses. Neutral phrasing protects the data from bias and surfaces what users actually think (not what they think you want to hear).
+3. **Stay in the present or past** — past behavior is the best predictor of future behavior. People guess badly about hypothetical futures; real events surface real needs, habits, and pain points.
+
+### Open vs. closed questions
+
+| Open (interviews, qual) | Closed (surveys, quant) |
+| --- | --- |
+| who / what / when / how / why | yes/no |
+| walk me through | do you / did you / does this |
+| tell me about | will you / can you |
+| describe / explain | |
+
+Lead questions in an interview guide should be **open**. Closed questions are fine as targeted follow-up probes for clarification or quantification — not as section openers.
+
+### Canonical DO / DON'T pairs
+
+**Staying natural**
+
+| DON'T | DO |
+| --- | --- |
+| "Let's start with question 1…" | "Tell me a bit about how you typically use Miro." |
+| "Please list all the collaboration tools you use." | "What tools do you and your team typically use to collaborate?" |
+| "Describe your perception of innovation." | "I'd love to hear how you define innovation in the context of your work." |
+
+**Staying neutral**
+
+| DON'T | DO |
+| --- | --- |
+| "Don't you think Miro is one of the best innovation tools?" | "What tools come to mind when you think of innovation?" |
+| "Did the translated content confuse you?" | "How well does the translated version work for you in your day-to-day tasks?" |
+| "Do you agree that Tables & Timelines are useful for planning?" | "What features help you plan or move from ideas into action?" |
+
+**Staying in the present or past**
+
+| DON'T | DO |
+| --- | --- |
+| "Would you use Miro more if the language was better translated?" | "Can you think of a time when a translation in Miro felt off or unclear?" |
+| "What would you do if we added more localized templates?" | "How often have you looked for a template in your language? Walk me through your process." |
+| "How would you use the Innovation Workspace in the future?" | "Tell me about the last time you did something innovative in Miro. What made it work?" |
+
+### How `guide` mode uses this rubric
+
+- **While drafting:** every lead question and probe is checked against the three rules. If a draft question fails, rewrite using the DO patterns above before it lands in the output.
+- **In the output:** the guide ends with a "Moderation self-check" appendix (see Mode 2 template) so the researcher can re-verify before piloting.
+- **Don't restate the rubric inline in the guide output** — link back to this section via the appendix. Single source of truth.
