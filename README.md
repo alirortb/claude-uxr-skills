@@ -52,7 +52,27 @@ Next step: "Push my branch to GitHub" (then open a PR, but don't self-merge).
 
 Severity markers: `[OK]` passes, `[WARN]` know-and-decide, `[FAIL]` blocking, `[INFO]` informational.
 
-## Install
+## Try `/prototype-audit` in 5 minutes
+
+Got [Claude Code](https://claude.com/claude-code) installed? Run these in your terminal:
+
+```
+git clone https://github.com/alirortb/claude-uxr-skills.git ~/dev/claude-uxr-skills
+mkdir -p ~/.claude/skills
+ln -s ~/dev/claude-uxr-skills/prototype-audit ~/.claude/skills/prototype-audit
+```
+
+Then `cd` into any git repo and start Claude Code:
+
+```
+cd ~/path/to/your-repo && claude
+```
+
+Once it loads, type `/prototype-audit`. You'll get a plain-English report like the examples above.
+
+No prototype repo handy? `cd` into the cloned `~/dev/claude-uxr-skills` itself — it's git-backed and works fine for a sanity check.
+
+## Install (all skills)
 
 Once the skills installer is configured:
 
