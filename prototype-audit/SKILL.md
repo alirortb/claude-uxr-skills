@@ -80,7 +80,7 @@ git diff --name-only --diff-filter=U
 
 ### 7. CLAUDE.md guardrail coverage
 - Check for `CLAUDE.md` at repo root.
-- If absent → **[INFO]** "No CLAUDE.md at repo root. Consider adding one (template at `~/dev/prototype-playbook/CLAUDE.md`)."
+- If absent → **[INFO]** "No CLAUDE.md at repo root. Consider adding one (template at https://github.com/miroapp-dev/prototype-playbook/blob/main/CLAUDE.md)."
 - If present, **read the file** and judge each of the four playbook guardrails into one of three states:
   - **documented** — CLAUDE.md states the rule in a way that agrees with the playbook (e.g., "never force-push", "main is protected, work on a branch", "do not self-merge — wait for review", "do not blindly resolve conflicts — surface them").
   - **contradicted** — CLAUDE.md states something that points the opposite way from the playbook (e.g., instructs auto-resolving conflicts, allows force-push, allows self-merge, allows direct commits to main).
