@@ -161,27 +161,58 @@ Write to `<study-name>-guide.md`.
 **Recording:** <tool + consent reminder>
 
 ## 0. Intro & warm-up (5 min)
+**Goal:** Build rapport, confirm consent, frame the session.
+
 - Thank participant + confirm consent + recording
 - Brief intro: who we are, what we're learning, no right answers
 - Warm-up: "Tell me about your role" / equivalent
 
 ## 1. <Section name — maps to research question 1> (~N min)
+**Goal:** <one sentence on what this section unpacks>
+
 - **Lead question:** ...
+  - *Listen for: <themes, behaviors, signals to capture in real time>*
 - **Probes:**
   - Why?
   - Can you walk me through the last time...?
-  - What was hard about that?
+  - *(If they mention X)* Tell me more about that — what triggered it?
+  - *(If they don't)* How does X show up in your work, if at all?
+- **(Segment-gated, optional):** <e.g., "For at-risk participants only: What made you start using Miro less?">
 
 ## 2. <Section name — maps to research question 2> (~N min)
+**Goal:** ...
+
 - **Lead question:** ...
+  - *Listen for: ...*
 - **Probes:** ...
 
 <repeat per research question>
 
 ## N. Wrap-up (5 min)
+**Goal:** Catch anything missed, close warmly, set next-step expectations.
+
 - "Anything we didn't cover that we should have?"
 - "What surprised you in this conversation?"
 - Thank you + next steps + incentive logistics
+
+---
+
+## Post-session summary (2 min, immediately after)
+
+Complete on the shared board right after the session — waiting loses the nuance. Default fields below; tune to match the study's actual research questions.
+
+| Field | Entry |
+| --- | --- |
+| Participant name + segment | |
+| Role, company, team size | |
+| Primary use case | (1–2 words) |
+| Key moment / trigger | (1 sentence in their words) |
+| Core value in their words | (verbatim quote) |
+| Hardest to replace | |
+| Tool overlap mentioned | |
+| Risk / churn signal | Low / Medium / High — gut read |
+| Top 2–3 takeaways | (in their words where possible) |
+| Memorable quotes | |
 
 ---
 
@@ -202,6 +233,9 @@ If any question fails a check, rewrite it using the DO patterns in the rubric be
 - Lead questions must be **open** (no yes/no, no leading).
 - Probes follow the "tell me about a time…" pattern over hypotheticals.
 - Apply the moderation rubric below while drafting. Every lead question and probe must pass the three checks (open / neutral / past-or-present) before it lands in the output.
+- Per-section **Goal** lines and ***Listen for:*** italicized cues are required, not optional — they match the canonical Miro UXR guide pattern. Source references in [[reference_uxr_discussion_guide_sources]].
+- Use conditional probes (`*(If they mention X)* … *(If they don't)* …`) only when there's a real fork in the conversation. Don't force them in.
+- Tune the Post-session summary fields to the study's research questions; the default block is a starting point, not a fixed schema.
 
 ### Handoff footer (always append)
 
