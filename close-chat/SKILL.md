@@ -14,7 +14,7 @@ Run a structured closeout pass at the end of a Claude Code session so the persis
 - After shipping a substantive artifact (PR opened, deploy landed, major doc finalized) — even without an explicit phrase, surface the closeout prompt
 - Do NOT auto-run for trivial sessions (single-question chats, doc-only commits, conversational exchanges)
 
-## The eight-item checklist
+## The nine-item checklist
 
 Walk through each item in order. For each: act if applicable, or explicitly say "skipped — not relevant this session." Silence on a step is not a pass.
 
@@ -99,7 +99,18 @@ A short list of what's not yet resolved:
 - Delete tasks that are no longer relevant (status: `deleted`)
 - Leave open only what's genuinely carrying into a future session
 
-### 8. Next move
+### 8. Plan / commitment alignment
+
+Read the user's plan-of-record from local memory (the user maintains a private file there describing workstreams, checkpoints, and grading criteria — locate it via `MEMORY.md`) and tag the session against it. The plan substance is intentionally not inlined in this file so that this SKILL.md is safe to ship in a public repo; the runtime resolves it from local memory at use-time.
+
+- **Workstream tag** — for any deliverable/decision this session produced, name which workstream/commitment from the plan it counts toward. Primary/secondary tagging is fine when work genuinely counts toward two — name both rather than forcing a single tag.
+- **Checkpoint proximity** — days remaining to each upcoming checkpoint in the plan; flag any workstream that looks thin against the plan's criteria for falling short.
+- **Stakeholder-comms hygiene** — if the session involved a stakeholder meeting or decision: were actions/decisions captured? Were the right people informed? Apply this especially to workstreams the plan grades on stakeholder communication.
+- **Other-workstream progress** — note progress (or explicit lack of it) for any plan element the deliverables folder doesn't capture (e.g. course chapters, framework proposals).
+
+Skip explicitly if the session was purely tactical (debug, doc fix) with no plan relevance — but say it by name.
+
+### 9. Next move
 
 One concrete sentence describing the **first thing the user should do** when they pick up next session. Not a vague "continue the work" — a specific action with the names + numbers + paths already filled in.
 
@@ -112,7 +123,7 @@ If there's no obvious next move (session was self-contained, no follow-up work),
 
 ## Output format
 
-A single "Closing-chat checklist" message to the user, structured as an 8-item bulleted recap. Each bullet starts with the step name + a one-line summary of what was updated (or "skipped — <reason>"). End with the **Next move** line set apart visually so it stands out as the actionable handoff into the next session.
+A single "Closing-chat checklist" message to the user, structured as a 9-item bulleted recap. Each bullet starts with the step name + a one-line summary of what was updated (or "skipped — <reason>"). End with the **Next move** line set apart visually so it stands out as the actionable handoff into the next session.
 
 Example shape:
 
@@ -126,7 +137,8 @@ Example shape:
 5. **Git** — branch `<name>` at `<sha>`, pushed to PR #N (state: <state>).
 6. **Open threads** — <bullet list>
 7. **Tasks** — cleaned (N completed, M deleted, K still active for follow-up).
-8. **Next move** — <one concrete sentence with names, paths, numbers>
+8. **Plan alignment** — counts toward <workstream>; <X> days to <next checkpoint>; stakeholder-comms <state>.
+9. **Next move** — <one concrete sentence with names, paths, numbers>
 
 ---
 
