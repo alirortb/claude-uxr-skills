@@ -120,9 +120,9 @@ Scannable view for the immediate team. Skip exploratory work here.
 
 ## 3. Guild candidates
 
-Anything that crossed a ship threshold this week — present in `~/dev/deliverables/` or marked shipped in memory — AND fits Polina's automation frame.
+Anything that crossed a ship threshold this week — present in `~/dev/deliverables/` or marked shipped in memory — AND fits the AI Design Guild automation frame.
 
-**Exclude Claude Code skills by default.** Polina's three canonical examples (UXR Budget Bot, UXR Tech Pulse, ReOps UXR Standup) are orchestration automations, not workflow tooling. A Claude Code skill qualifies only if it orchestrates external systems beyond Claude Code itself (e.g. wraps a Slack/Snowflake/Miro API call as part of its execution). Pure dev-workflow skills (audit, summary, doc-drafting) are logged in the personal log + team digest but not in this section. When excluded, add a one-line note at the top of the Guild section explaining why so the user can override on review.
+**Exclude Claude Code skills by default.** The Guild's canonical examples (UXR Budget Bot, UXR Tech Pulse, ReOps UXR Standup) are orchestration automations, not workflow tooling. A Claude Code skill qualifies only if it orchestrates external systems beyond Claude Code itself (e.g. wraps a Slack/Snowflake/Miro API call as part of its execution). Pure dev-workflow skills (audit, summary, doc-drafting) are logged in the personal log + team digest but not in this section. When excluded, add a one-line note at the top of the Guild section explaining why so the user can override on review.
 
 Pre-format each candidate in Anthony's Format A bullet style (per `reference_ai_design_guild_summaries.md`):
 

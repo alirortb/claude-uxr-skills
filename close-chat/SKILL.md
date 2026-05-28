@@ -23,7 +23,7 @@ Walk through each item in order. For each: act if applicable, or explicitly say 
 If the session touched a tracked project (anything in `MEMORY.md` index), update the relevant `project_*.md`:
 
 - Current shipped state (PR links, commit SHAs, version)
-- Real data points if surfaced (e.g., "Hannah's 3/3/7" instead of stale "8 weeks")
+- Real data points if surfaced (e.g., concrete progress numbers like "3/3/7 complete" instead of stale "8 weeks")
 - Parked work (local branches, deferred follow-ups)
 - Key files index for fast orientation
 - Update or rename the file if the project's identity shifted (route renames, scope changes); also update `MEMORY.md` index entry
@@ -117,7 +117,7 @@ One concrete sentence describing the **first thing the user should do** when the
 Good examples:
 - "Tomorrow morning: change B1 in Batch Current to J|K|L|M|N → download Braze-new + Braze-existing CSVs (skip NBA) → fire campaigns → post the final Day 3 update."
 - "Next session: rebase `anthony/feedforward-remote-card-harmony` onto main after PR #28 merges, then push and open the follow-up PR."
-- "First move: read Deniz's reply in #research-team-sandbox before touching the tile-tone refactor — he flagged a token decision that affects the approach."
+- "First move: read the reviewer's reply in the team channel before touching the refactor — they flagged a decision that affects the approach."
 
 If there's no obvious next move (session was self-contained, no follow-up work), say "Next move: none — this session was self-contained." Honest is better than fabricated.
 
