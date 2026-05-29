@@ -313,6 +313,7 @@ Write to `<study-name>-one-pager.md`.
 - Each insight is **singular** — not a roll-up of multiple points.
 - If quoting participants, preserve the source's citation format exactly. For `customer-insights` output, that means `[P02/Name ~14:30]` style — see the team skill repo for the canonical rules.
 - Do not re-extract, paraphrase, or recombine quotes from source material.
+- **Miro output is paste-only by default.** The deliverable is the `.md` file — do not auto-push to Miro. If a Miro MCP is connected and the user explicitly asks to push, target the canonical **frame + three blocks** format (one frame, three child blocks mapping to insights 01/02/03), *not* a Miro Doc. A Doc dump is the wrong format and is never the default. Mind parent-relative coordinates when placing the blocks ([[feedback_miro_api_parent_coords]]) and source the card styling from the team template, don't hand-roll it ([[reference_html_one_pager_workflow]]). If you're unsure whether a team skill/script already renders this frame, stop and check before building a push path ([[feedback_complement_dont_duplicate]]).
 
 ### Handoff footer (always append)
 
@@ -332,7 +333,7 @@ Quote conventions follow: `github.com/miroapp-dev/uxr-skills` (if applicable)
 - Analyze transcripts → use `/customer-insights`
 - Extract or verify quotes → use `/customer-insights`
 - Run contradiction or confidence checks → use `/customer-insights`
-- Push to Miro / Great Question / Gong → manual paste, or future MCP integration
+- Push to Miro / Great Question / Gong → paste-only by default. The one exception: if a Miro MCP is connected *and* the user explicitly asks, `one-pager` may push to the canonical **frame + three blocks** format — never a Miro Doc, never unprompted (see Mode 3 Rules).
 - Maintain a study folder structure → write where the user is; don't impose layout
 - Live moderation coaching / line-by-line critique of an existing guide → not in scope today. If demand emerges, split into a `/moderation-coach` skill rather than adding a fourth mode here.
 
