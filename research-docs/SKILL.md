@@ -278,7 +278,7 @@ Ask by *outcome*, never by mechanism — the user picks by what they'll do next,
 
 - **(a) Just the markdown file** *(Recommended — always works; paste it anywhere yourself)* → write `one-pager.md` and stop.
 - **(b) A polished page to share or present** → render the self-contained HTML one-pager ([[reference_html_one_pager_workflow]]); static, not editable in place.
-- **(c) Our team's Miro one-pager (frame + 3 blocks), editable on the board** → *requires a connected Miro MCP.* Check first whether one is available. If connected, push to the canonical frame + three-blocks format (see Rules). **If not connected, do not dead-end the user** — generate `one-pager.md` and print explicit paste-into-Miro / embed steps instead.
+- **(c) Our team's Miro one-pager (frame + 3 blocks), editable on the board** → *requires the `miroctl` CLI* (the team's Miro write tool — command knowledge lives in `miroapp-dev/miroctl-skill`). Check it's available first. If it is, push to the canonical frame + three-blocks format (see *Pushing to Miro* below). **If not available, do not dead-end the user** — generate `one-pager.md` and print explicit paste-into-Miro / embed steps instead.
 
 Default to **(a)** if the user has no preference. Never silently choose a destination — especially never auto-push to Miro (a Doc dump is the failure mode this gate exists to prevent).
 
@@ -325,7 +325,27 @@ Write to `<study-name>-one-pager.md`.
 - Each insight is **singular** — not a roll-up of multiple points.
 - If quoting participants, preserve the source's citation format exactly. For `customer-insights` output, that means `[P02/Name ~14:30]` style — see the team skill repo for the canonical rules.
 - Do not re-extract, paraphrase, or recombine quotes from source material.
-- **Miro output is paste-only by default; the destination is set by the preflight gate, never chosen silently.** Push to Miro only when the gate's question 2 returns **(c)** *and* a Miro MCP is connected. When you do push, target the canonical **frame + three blocks** format (one frame, three child blocks mapping to insights 01/02/03), *not* a Miro Doc — a Doc dump is the failure mode this gate exists to prevent. Mind parent-relative coordinates when placing the blocks ([[feedback_miro_api_parent_coords]]) and source the card styling from the team template, don't hand-roll it ([[reference_html_one_pager_workflow]]). If you're unsure whether a team skill/script already renders this frame, stop and check before building a push path ([[feedback_complement_dont_duplicate]]).
+- **Miro output is paste-only by default; the destination is set by the preflight gate, never chosen silently.** Push only when the gate's question 2 returns **(c)** *and* `miroctl` is available — and target the canonical **frame + three blocks** format, *never* a Miro Doc (a Doc dump is the failure mode this gate exists to prevent). See *Pushing to Miro (frame + 3 blocks)* below for the layout this skill owns; `miroctl-skill` owns the exact payloads and brand styling — don't restate its command syntax or hand-pick styling here ([[feedback_complement_dont_duplicate]]).
+
+### Pushing to Miro (frame + 3 blocks)
+
+Runs **only** when the destination gate returns **(c)**. The team's Miro write CLI is `miroctl` (command knowledge lives in `miroapp-dev/miroctl-skill`).
+
+**Preconditions — check, never assume, never act on the user's behalf:**
+
+- **Installed?** If `miroctl` isn't installed, fall back to `one-pager.md` + paste steps — don't dead-end.
+- **Authenticated?** Check `miroctl auth status`. If there's no token, **stop and prompt the user to connect it themselves** — `miroctl auth login` opens *their* browser (scopes `boards:read boards:write`). Auth is the user's runtime step, scoped to their own Miro account — never embed a token, never try to log in for them. Wait for them to confirm they're connected, or fall back to paste steps if they'd rather not.
+
+This skill owns the **layout**; `miroctl-skill` owns the **payloads and brand styling**. Hand off the layout below; do not restate `miroctl` command syntax or hand-pick hex values here.
+
+1. **Board** — ask for a Miro board URL or ID; extract the ID with `board/([^/]+)/?`.
+2. **Frame** — one frame, title = `<Study Title>`. Size it for a header line plus three stacked blocks.
+3. **Three blocks** — block 01 / 02 / 03 each map to one insight (title + 3–5 sentence detail), stacked vertically and evenly spaced. The frame header carries author + tags.
+4. **Parenting** — place each block inside the frame via the nested `"parent":{"id":"<frame-id>"}` form (the flat `parentId` field is rejected with 400).
+5. **Coordinates are center-based inside a frame** — a child's `x`/`y` is its *center*, valid within `[0, frame_width] × [0, frame_height]` (per the authoritative `miroctl` items reference; this supersedes the older top-left framing in [[feedback_miro_api_parent_coords]]).
+6. **Styling** — pull colors/fonts from the team brand tokens (`miroctl-presentation` brand reference); don't hand-pick them.
+
+After pushing, give the board link and confirm exactly **1 frame + 3 blocks** landed.
 
 ### Handoff footer (always append)
 
