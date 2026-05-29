@@ -65,6 +65,9 @@ Write to `<study-name>-plan.md` in the current directory (or path the user speci
 ```markdown
 # <Project Title>
 
+> **TL;DR** — <one line: what decision this informs>
+> **Objective:** <top objective, ≤1 line> · **Method:** <e.g., 8× 1:1 interviews> · **Participants:** <n + segment> · **Timeline:** <target completion>
+
 ## Overview
 - **Summary:** <1-2 sentences>
 - **Background:** <prior research, motivation, what's known>
@@ -104,6 +107,10 @@ Write to `<study-name>-plan.md` in the current directory (or path the user speci
 ## Appendix
 <links to prior studies, related docs>
 ```
+
+### Rules
+
+- **TL;DR block is required, not optional.** It gives a skimming stakeholder the objective / method / n / timeline / decision in under 60 seconds without scrolling. Populate every field from the plan content below it — never leave a bracketed placeholder. It summarizes; it does not replace any section.
 
 ### Handoff footer (always append)
 
