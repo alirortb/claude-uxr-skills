@@ -264,11 +264,23 @@ Distill **user-provided** insights into the 3-card one-pager format. **Does not 
 
 ### Preflight check
 
-Ask: "What's the source of these insights?"
+Two questions before generating. Ask both; don't guess either.
+
+**1. "What's the source of these insights?"**
 
 - **(a) `customer-insights` output** — recommended; team-standard, already verified and cited
 - **(b) Manual synthesis or other tool** — accepted; the one-pager runs on what's provided
 - **(c) Raw transcripts only** — **stop**. Direct user to run `/customer-insights` first. Do not synthesize here.
+
+**2. "Where does this one-pager need to land?"**
+
+Ask by *outcome*, never by mechanism — the user picks by what they'll do next, not by tooling. Mark the recommendation inline. Surface the decision axis (editable vs. static, works-anywhere vs. needs-a-tool) in each option's trailing clause — that clause is what lets a non-technical user self-identify what they need.
+
+- **(a) Just the markdown file** *(Recommended — always works; paste it anywhere yourself)* → write `one-pager.md` and stop.
+- **(b) A polished page to share or present** → render the self-contained HTML one-pager ([[reference_html_one_pager_workflow]]); static, not editable in place.
+- **(c) Our team's Miro one-pager (frame + 3 blocks), editable on the board** → *requires a connected Miro MCP.* Check first whether one is available. If connected, push to the canonical frame + three-blocks format (see Rules). **If not connected, do not dead-end the user** — generate `one-pager.md` and print explicit paste-into-Miro / embed steps instead.
+
+Default to **(a)** if the user has no preference. Never silently choose a destination — especially never auto-push to Miro (a Doc dump is the failure mode this gate exists to prevent).
 
 ### Required inputs
 
@@ -313,7 +325,7 @@ Write to `<study-name>-one-pager.md`.
 - Each insight is **singular** — not a roll-up of multiple points.
 - If quoting participants, preserve the source's citation format exactly. For `customer-insights` output, that means `[P02/Name ~14:30]` style — see the team skill repo for the canonical rules.
 - Do not re-extract, paraphrase, or recombine quotes from source material.
-- **Miro output is paste-only by default.** The deliverable is the `.md` file — do not auto-push to Miro. If a Miro MCP is connected and the user explicitly asks to push, target the canonical **frame + three blocks** format (one frame, three child blocks mapping to insights 01/02/03), *not* a Miro Doc. A Doc dump is the wrong format and is never the default. Mind parent-relative coordinates when placing the blocks ([[feedback_miro_api_parent_coords]]) and source the card styling from the team template, don't hand-roll it ([[reference_html_one_pager_workflow]]). If you're unsure whether a team skill/script already renders this frame, stop and check before building a push path ([[feedback_complement_dont_duplicate]]).
+- **Miro output is paste-only by default; the destination is set by the preflight gate, never chosen silently.** Push to Miro only when the gate's question 2 returns **(c)** *and* a Miro MCP is connected. When you do push, target the canonical **frame + three blocks** format (one frame, three child blocks mapping to insights 01/02/03), *not* a Miro Doc — a Doc dump is the failure mode this gate exists to prevent. Mind parent-relative coordinates when placing the blocks ([[feedback_miro_api_parent_coords]]) and source the card styling from the team template, don't hand-roll it ([[reference_html_one_pager_workflow]]). If you're unsure whether a team skill/script already renders this frame, stop and check before building a push path ([[feedback_complement_dont_duplicate]]).
 
 ### Handoff footer (always append)
 
