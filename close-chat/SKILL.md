@@ -1,6 +1,6 @@
 ---
 name: close-chat
-description: Closeout checklist for the end of a Claude Code session — syncs project memory, deliverables log, LORE, TODOS, git state, open threads, and task list so the next session (or a future reader) picks up cleanly. Use when user invokes "/close-chat", says "wrap up", "prepare to close (the) chat", "session wrap", "before I close", "let's close out", "end of session", or after shipping a substantive deliverable. Audience is Anthony (Research Operations at Miro); his memory + deliverables folder + sandbox repos are the targets to keep in sync.
+description: Closeout checklist for the end of a Claude Code session — syncs project memory, deliverables log, LORE, TODOS, git state, open threads, and task list so the next session (or a future reader) picks up cleanly. Use when user invokes "/close-chat", says "wrap up", "prepare to close (the) chat", "session wrap", "before I close", "let's close out", "end of session", or after shipping a substantive deliverable. Audience is the repo owner (a Research Ops practitioner); their memory + deliverables folder + sandbox repos are the targets to keep in sync.
 ---
 
 # /close-chat — Session closeout
@@ -101,11 +101,11 @@ A short list of what's not yet resolved:
 
 ### 8. Plan / commitment alignment
 
-Read the user's plan-of-record from local memory (the user maintains a private file there describing workstreams, checkpoints, and grading criteria — locate it via `MEMORY.md`) and tag the session against it. The plan substance is intentionally not inlined in this file so that this SKILL.md is safe to ship in a public repo; the runtime resolves it from local memory at use-time.
+Read the user's plan-of-record from local memory (the user maintains a private file there describing workstreams, checkpoints, and success criteria — locate it via `MEMORY.md`) and tag the session against it. The plan substance is intentionally not inlined in this file so that this SKILL.md is safe to ship in a public repo; the runtime resolves it from local memory at use-time.
 
 - **Workstream tag** — for any deliverable/decision this session produced, name which workstream/commitment from the plan it counts toward. Primary/secondary tagging is fine when work genuinely counts toward two — name both rather than forcing a single tag.
-- **Checkpoint proximity** — days remaining to each upcoming checkpoint in the plan; flag any workstream that looks thin against the plan's criteria for falling short.
-- **Stakeholder-comms hygiene** — if the session involved a stakeholder meeting or decision: were actions/decisions captured? Were the right people informed? Apply this especially to workstreams the plan grades on stakeholder communication.
+- **Checkpoint proximity** — days remaining to each upcoming checkpoint in the plan; flag any workstream that looks thin against the plan's targets.
+- **Stakeholder-comms hygiene** — if the session involved a stakeholder meeting or decision: were actions/decisions captured? Were the right people informed? Apply this especially to workstreams the plan tracks for stakeholder communication.
 - **Other-workstream progress** — note progress (or explicit lack of it) for any plan element the deliverables folder doesn't capture (e.g. course chapters, framework proposals).
 
 Skip explicitly if the session was purely tactical (debug, doc fix) with no plan relevance — but say it by name.
@@ -115,8 +115,8 @@ Skip explicitly if the session was purely tactical (debug, doc fix) with no plan
 One concrete sentence describing the **first thing the user should do** when they pick up next session. Not a vague "continue the work" — a specific action with the names + numbers + paths already filled in.
 
 Good examples:
-- "Tomorrow morning: change B1 in Batch Current to J|K|L|M|N → download Braze-new + Braze-existing CSVs (skip NBA) → fire campaigns → post the final Day 3 update."
-- "Next session: rebase `anthony/feedforward-remote-card-harmony` onto main after PR #28 merges, then push and open the follow-up PR."
+- "Tomorrow morning: update the campaign batch config → export the per-segment CSVs → fire the scheduled sends → post the final daily status update."
+- "Next session: rebase `feature/example-branch` onto main after PR #NN merges, then push and open the follow-up PR."
 - "First move: read the reviewer's reply in the team channel before touching the refactor — they flagged a decision that affects the approach."
 
 If there's no obvious next move (session was self-contained, no follow-up work), say "Next move: none — this session was self-contained." Honest is better than fabricated.

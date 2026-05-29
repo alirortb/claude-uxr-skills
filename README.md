@@ -4,7 +4,7 @@ Personal [Claude Code](https://claude.com/claude-code) skills for UXR/ReOps work
 
 ## Positioning
 
-This repo is **personal R&D space** for skills I use day-to-day. It **complements** team-distributed skill collections like [`miroapp-dev/uxr-skills`](https://github.com/miroapp-dev/uxr-skills) (Michael Schade's `customer-insights` and related) — it is **not a fork, alternative, or competitor**. Where workflows overlap, my skills hand off to the team skills via informational pointers rather than duplicating their logic. Skills here may be PR'd upstream once they've earned the keep across multiple real uses.
+This repo is **personal R&D space** for skills I use day-to-day. It **complements** team-distributed skill collections like [`miroapp-dev/uxr-skills`](https://github.com/miroapp-dev/uxr-skills) (the `customer-insights` skill and related) — it is **not a fork, alternative, or competitor**. Where workflows overlap, my skills hand off to the team skills via informational pointers rather than duplicating their logic. Skills here may be PR'd upstream once they've earned the keep across multiple real uses.
 
 ## Skills
 

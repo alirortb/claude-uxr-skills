@@ -24,7 +24,7 @@ I'm closing out a working session with Anthony Li (Research Operations at Miro).
 - His main sandbox repo is `~/dev/research-team-sandbox/` which maintains `CHANGELOG.md`, `LORE.md` (a chronicle of *why we are here*), `VERSION` (semver, bump per PR), `TODOS.md` (RTS-N P2/P3 entries with file paths), and branch-name convention `<yourname>/<what-you-are-building>`.
 - He prefers honest representations over flattering ones (e.g., showing real streak math with gaps, not collapsed counts).
 
-**Plan / commitment context (paste-in if relevant):** If this session's work counts toward a personal plan with workstreams, checkpoints, or stakeholder-grading criteria, paste that context inline in the "session covered" block at the bottom of this message — Claude won't have it otherwise, and step 8 below depends on it. If no such plan context applies, skip the paste and step 8 will say "no plan relevance." (This block intentionally stays generic so the paste-block file is safe to keep in a public repo.)
+**Plan / commitment context (paste-in if relevant):** If this session's work counts toward a personal plan with workstreams, checkpoints, or success criteria, paste that context inline in the "session covered" block at the bottom of this message — Claude won't have it otherwise, and step 8 below depends on it. If no such plan context applies, skip the paste and step 8 will say "no plan relevance." (This block intentionally stays generic so the paste-block file is safe to keep in a public repo.)
 
 **The nine-item closeout checklist** — for each item, either produce the draft text or explicitly say "skipped — <reason>". Silence is not a pass.
 
@@ -56,6 +56,6 @@ Key decisions or pivots: <ANY DECISIONS WORTH CHRONICLING>
 Real data points surfaced: <NUMBERS / NAMES / FACTS THAT CORRECT EARLIER ASSUMPTIONS>
 Parked / deferred items: <ANYTHING POSTPONED OR LEFT OPEN>
 Stakeholders / reviewers involved: <NAMES>
-Plan / commitment context (if any): <paste workstreams, checkpoints, grading criteria, OR write "none">
+Plan / commitment context (if any): <paste workstreams, checkpoints, success criteria, OR write "none">
 Which workstream(s) / commitments this session counts toward: <name them from the pasted plan, or "none">
 ```
