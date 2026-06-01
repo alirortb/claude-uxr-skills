@@ -11,6 +11,7 @@ This repo is **personal R&D space** for skills I use day-to-day. It **complement
 - **[`research-docs`](./research-docs/)** — Generate UXR plan, interview guide, or insights one-pager. Bookends `customer-insights` (BEFORE + AFTER stages); never replicates transcript analysis or synthesis.
 - **[`prototype-audit`](./prototype-audit/)** — Read-only safety check for prototype repos against the [design-team prototype playbook](https://github.com/miroapp-dev/prototype-playbook). Surfaces state plainly for non-technical users; never auto-fixes.
 - **[`eow-summary`](./eow-summary/)** — Generate an end-of-week summary by scanning Claude Code transcripts, `~/dev/*` git activity, `~/dev/deliverables/` entries, and project memory. Produces a layered draft (personal log, team digest, AI Design Guild candidates) for editing before sharing.
+- **[`eod-recap`](./eod-recap/)** — End-of-day recap of action items, deliverables, and commitments pulled from the Slack messages *you* sent today. Writes a dated daily log and flags deliverable-worthy items. Daily sibling of `eow-summary`. Requires a connected Slack MCP.
 
 ## What `/prototype-audit` looks like
 
@@ -87,6 +88,7 @@ git clone https://github.com/alirortb/claude-uxr-skills.git ~/dev/claude-uxr-ski
 ln -s ~/dev/claude-uxr-skills/research-docs ~/.claude/skills/research-docs
 ln -s ~/dev/claude-uxr-skills/prototype-audit ~/.claude/skills/prototype-audit
 ln -s ~/dev/claude-uxr-skills/eow-summary ~/.claude/skills/eow-summary
+ln -s ~/dev/claude-uxr-skills/eod-recap ~/.claude/skills/eod-recap
 ```
 
 ## Design principles
