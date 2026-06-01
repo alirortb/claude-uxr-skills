@@ -72,6 +72,17 @@ When a kept item is performance/manager-review substance, collapse it to a singl
 
 Record only: that comms happened, the channel, and the recipient role. **No** workstream breakdowns, scores, manager quotes, or commitments verbatim. If unsure whether something qualifies, redact it. (Per the no-private-info rule — substance stays out of any written artifact, including local logs.)
 
+## Categorize items (the metrics layer)
+
+Tag each kept item with **one primary category** so the daily and weekly views can show coverage as numbers, not just a list.
+
+Read the user's category taxonomy from `~/dev/eod-recaps/taxonomy.local.md` (a local, never-committed file). It defines the category tags, what each one counts toward, and the tagging rules — **follow that file's rules exactly**, including its guidance on which items are off-plan or excluded from coverage. Prepend the chosen tag to each item in parentheses, e.g. `- [deliverable] (<cat>) <summary> — <where>`.
+
+- If a single item is genuinely ambiguous, tag your best guess with a trailing `?` (e.g. `(<cat>?)`) so the weekly rollup can surface it for confirmation.
+- **If `taxonomy.local.md` is absent, degrade gracefully:** tag each item by its project/initiative name instead, and note in the Metrics block that workstream coverage is unavailable until the taxonomy file exists. Never invent or hardcode a category scheme in this skill.
+
+These category tags are the only place categories live in output — this skill stays category-agnostic by design.
+
 ## Output
 
 Write to `~/dev/eod-recaps/YYYY-MM-DD.md`.
@@ -89,22 +100,25 @@ Write to `~/dev/eod-recaps/YYYY-MM-DD.md`.
 _Draft generated <ISO timestamp> from Slack messages sent by the user today. Edit before relying on it._
 
 ## Action items
-- [action] <summary> — <recipient/channel> <due date if any>
+- [action] (<cat>) <summary> — <recipient/channel> <due date if any>
 
 ## Deliverables communicated
-- [deliverable] <summary> — <where shared>
+- [deliverable] (<cat>) <summary> — <where shared>
 
 ## Commitments made
-- [commitment] <summary> — <to whom> · <by when>
+- [commitment] (<cat>) <summary> — <to whom> · <by when>
 
 ## Decisions communicated
-- [decision] <summary> — <channel/context>
+- [decision] (<cat>) <summary> — <channel/context>
 
-## Coverage
-- Messages scanned: <n>  ·  Items kept: <n>  ·  Channels/DMs touched: <list>
+## Metrics
+- Coverage (by category): <cat>:<n> … · Off-plan:<n> · Meta(excluded):<n>
+- Deliverables shipped today: <n>
+- Commitments made today: <n> (with a due date: <n>)
+- Messages scanned: <n> · Items kept: <n> · Channels/DMs touched: <list>
 ```
 
-Omit any section with no items rather than printing an empty heading.
+Omit any section with no items rather than printing an empty heading. The `## Metrics` block always renders (it's the numerical layer). Keep the daily metrics to *today's snapshot* — closure rate, aging, and shipped-vs-said are computed at the weekly rollup (`eow-summary`), which reads across the full eod-recap history.
 
 ## Feeding the Deliverables Log (flag, don't auto-write)
 
@@ -118,7 +132,7 @@ Instead, after writing the daily recap:
 
 Print to the user:
 1. The output file path.
-2. The counts: messages scanned · items kept · channels touched.
+2. The Metrics snapshot: category coverage, deliverables shipped, commitments made, messages scanned · items kept · channels touched. Call out any workstream sitting at 0 — that imbalance is the signal worth seeing.
 3. The list of any Deliverables-Log candidates, with the offer to draft proper entries.
 4. Reminder: "Draft — edit before relying on it."
 

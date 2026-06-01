@@ -156,13 +156,42 @@ Pre-format each candidate in Anthony's Format A bullet style (per `reference_ai_
   - Gain: <one sentence on the win>
 
 If nothing crossed the threshold this week, write: _No Guild candidates this week._
+
+## 4. Metrics
+
+The numerical layer — for the user's own reference and performance audits. Computed from the eod-recap items' category tags + git/deliverables. See "Computing the metrics rollup" below.
+
+**Coverage this week** _(items per category; a workstream at 0 is the signal)_
+- <cat>: <n>  ·  <cat>: <n>  ·  … · Off-plan: <n>   _(Meta/checkpoint-comms excluded)_
+
+**Deliverables** — shipped this week: <n>  ·  vs prior week: <n> (<Δ>)
+
+**Commitments** — made this week: <n>  ·  shipped/closed: <n>  ·  **closure rate: <x>%**
+
+**Open commitments** _(all-time, scanned across eod history)_ — <n> open, <n> overdue
+- <commitment> · made <date> · age <d>d · <OVERDUE if past due> · to <whom>
+
+**Shipped-vs-said** — <deliverables with a real git/deliverables artifact> / <total deliverable claims> = <x>%
+
+_If `~/dev/eod-recaps/taxonomy.local.md` is absent or no eod-recap files fell in the window, note that and emit only the metrics derivable from git/deliverables._
 ```
+
+## Computing the metrics rollup
+
+- **Coverage** — tally the category tags on items in this week's eod-recap files. Carry the tags straight from the files; don't re-categorize. Exclude `Meta`/`[private — checkpoint comms]` items. Surface any category at 0.
+- **Closure rate** — of `[commitment]` items logged *this week*, how many have a matching shipped artifact (a commit/PR in git or a deliverables entry) — best-effort match on project/topic. Ambiguous matches count as open, labeled "(unverified)".
+- **Open commitments + aging** — scan **all** `~/dev/eod-recaps/YYYY-MM-DD.md` files (the daily files are the persistence — no separate ledger). For each `[commitment]` with no matching shipped artifact: age = window-end date − the date it was first logged; overdue = a stated due date now past. Only files named as ISO dates — skip `taxonomy.local.md` and anything else.
+- **Shipped-vs-said** — `[deliverable]` items with a real artifact behind them (git/deliverables) ÷ all `[deliverable]` items this week.
+- **Throughput** — deliverables shipped this week vs. the prior week's eow-summary metrics block (if present).
+
+These are activity/coverage/follow-through signals, **not impact**. Git + the Deliverables Log remain the outcome evidence; the metrics complement them. Never present a raw count as if it were performance.
 
 ## After writing the file
 
 1. Print to the user:
    - The output file path
    - A 3-line summary: # projects touched, # shipped, # Guild candidates
+   - The metrics headline: coverage by category (flag any at 0), closure rate, open/overdue commitments
    - Reminder: "Draft — edit before sharing."
 
 2. **Self-schedule next week's run** (works around the 7-day cron auto-expiration):
@@ -174,6 +203,7 @@ If nothing crossed the threshold this week, write: _No Guild candidates this wee
 
 - **Draft, not final.** Header always says "Draft generated — edit before sharing."
 - **No invented metrics.** Pull from project memory and deliverables entries. If a metric isn't recorded, write `Metric: TBD — pull from <source>`.
+- **Category-agnostic skill.** Read categories from the user's local `~/dev/eod-recaps/taxonomy.local.md`; never hardcode a category scheme here. The metrics layer is coverage/follow-through, not impact — don't present a raw count as performance.
 - **Honest about AI role.** When an automation is pure orchestration, say so (Format A house rule).
 - **Weekday-only.** Drop Sat/Sun activity even if a calendar-week range is passed.
 - **Source weighting.** Git is ground truth for what shipped; transcripts are last-resort context.
