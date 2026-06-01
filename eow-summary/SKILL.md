@@ -198,6 +198,14 @@ After the weekly markdown is written, refresh the **living operating dashboard**
 - Carry redaction forward — never expand `[private — checkpoint comms]` items into the dashboard.
 - **Preserve human-curated sections verbatim.** If the dashboard has a manually-curated section (e.g. a "Collaboration & peer signal" section quoting other people), carry it through **unchanged** — never auto-generate, rewrite, or drop peer quotes. Attribution of others' words stays human-curated; the auto-run only refreshes the computed metrics (coverage, closure, trend), not the curated signal.
 
+### Refresh the machine-readable JSON export too
+
+If a metrics generator script exists (e.g. `~/dev/eow-summaries/gen-metrics.py`), **run it** after the dashboard so the JSON export stays in lockstep with the HTML — don't hand-write the JSON. The script parses the eod files deterministically and merges an editable sidecar (`metrics-inputs.json`) for judgment inputs (commitment statuses, peer signal, shipped/git numbers).
+
+- Keep the JSON's window consistent with the dashboard's.
+- During the rollup you already re-scan git and re-assess commitment closures — **write those updated figures into the sidecar** (shipped numbers + any status changes) *before* running the script, so the JSON reflects this week, not the seed. New commitments default to `open` and are flagged; resolve them in the sidecar.
+- Both artifacts are local-only.
+
 ## After writing the file
 
 1. Print to the user:
