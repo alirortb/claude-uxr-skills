@@ -186,10 +186,21 @@ _If `~/dev/eod-recaps/taxonomy.local.md` is absent or no eod-recap files fell in
 
 These are activity/coverage/follow-through signals, **not impact**. Git + the Deliverables Log remain the outcome evidence; the metrics complement them. Never present a raw count as if it were performance.
 
+## Regenerate the living dashboard (multi-source HTML)
+
+After the weekly markdown is written, refresh the **living operating dashboard** — a single, stable, overwritten HTML file that always reflects the latest cumulative picture, so it can be printed at any checkpoint without a one-off build.
+
+- Path: `~/dev/eow-summaries/<dashboard>.html` (a fixed filename — overwrite it each run; it is NOT dated). If it doesn't exist yet, create it; match the visual language of the existing deliverables share-HTML one-pagers (inline CSS, no JS, print-friendly).
+- **Multi-source, not Slack-only.** Compute its numbers from the reconciled rollup across the full eod-recap history *plus* git and the deliverables log to date — not just this week, not just Slack.
+- **Two lenses, side by side: "Communicated" (from eod-recaps) and "Shipped" (git commits/PRs + deliverables entries).** Present them separately and surface the delta — don't merge fuzzy tags into one count. The gap between communicated and shipped is itself a finding.
+- Include: category coverage (from the taxonomy tags), commitment closure (closed / open / overdue), and the weekly activity trend.
+- **Local-only.** This file carries category/taxonomy substance; never push it to a public repo or `git init` the folder.
+- Carry redaction forward — never expand `[private — checkpoint comms]` items into the dashboard.
+
 ## After writing the file
 
 1. Print to the user:
-   - The output file path
+   - The output file path + that the living dashboard HTML was refreshed
    - A 3-line summary: # projects touched, # shipped, # Guild candidates
    - The metrics headline: coverage by category (flag any at 0), closure rate, open/overdue commitments
    - Reminder: "Draft — edit before sharing."
