@@ -196,6 +196,7 @@ After the weekly markdown is written, refresh the **living operating dashboard**
 - Include: category coverage (from the taxonomy tags), commitment closure (closed / open / overdue), and the weekly activity trend.
 - **Local-only.** This file carries category/taxonomy substance; never push it to a public repo or `git init` the folder.
 - Carry redaction forward — never expand `[private — checkpoint comms]` items into the dashboard.
+- **Preserve human-curated sections verbatim.** If the dashboard has a manually-curated section (e.g. a "Collaboration & peer signal" section quoting other people), carry it through **unchanged** — never auto-generate, rewrite, or drop peer quotes. Attribution of others' words stays human-curated; the auto-run only refreshes the computed metrics (coverage, closure, trend), not the curated signal.
 
 ## After writing the file
 
