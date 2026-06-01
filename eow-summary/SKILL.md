@@ -190,7 +190,7 @@ These are activity/coverage/follow-through signals, **not impact**. Git + the De
 
 After the weekly markdown is written, refresh the **living operating dashboard** — a single, stable, overwritten HTML file that always reflects the latest cumulative picture, so it can be printed at any checkpoint without a one-off build.
 
-- Path: `~/dev/eow-summaries/<dashboard>.html` (a fixed filename — overwrite it each run; it is NOT dated). If it doesn't exist yet, create it; match the visual language of the existing deliverables share-HTML one-pagers (inline CSS, no JS, print-friendly).
+- Path: `~/dev/eow-summaries/<dashboard>.html` (a fixed filename — overwrite it each run; it is NOT dated). **If the file already exists, reuse its CSS + component structure as the template** (refresh only the numbers/bars) so styling stays consistent and correct — don't re-derive the layout. If creating it fresh, match the deliverables share-HTML one-pagers (inline CSS, no JS, print-friendly). Note: bar fills must be `display:block` (a `<span>` fill inside a grid-item track is inline and renders nothing otherwise).
 - **Multi-source, not Slack-only.** Compute its numbers from the reconciled rollup across the full eod-recap history *plus* git and the deliverables log to date — not just this week, not just Slack.
 - **Two lenses, side by side: "Communicated" (from eod-recaps) and "Shipped" (git commits/PRs + deliverables entries).** Present them separately and surface the delta — don't merge fuzzy tags into one count. The gap between communicated and shipped is itself a finding.
 - Include: category coverage (from the taxonomy tags), commitment closure (closed / open / overdue), and the weekly activity trend.
