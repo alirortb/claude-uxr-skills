@@ -70,16 +70,33 @@ find ~/.claude/projects -maxdepth 2 -name '*.jsonl' \
 ```
 Group by project subdirectory. Use sparingly — surface blockers, exploratory threads, and work that left no git/deliverables/memory trace. **Never paste raw transcript content.** Synthesize.
 
+### 5. EOD recaps — Slack-communicated commitments (`~/dev/eod-recaps/`)
+
+The companion `eod-recap` skill writes one dated file per day (`YYYY-MM-DD.md`) holding the action items, deliverables, commitments, and decisions the user **communicated in Slack** that day — already classified and noise-filtered. This is the only source that captures what the user *told people they'd do*; git, deliverables, and memory don't see Slack.
+
+Filenames are ISO dates, so a lexical range over the window selects the right files:
+```
+for f in ~/dev/eod-recaps/*.md; do
+  d=$(basename "$f" .md)
+  [[ "$d" > "$START" || "$d" == "$START" ]] && [[ "$d" < "$END" || "$d" == "$END" ]] && echo "$f"
+done
+```
+Drop any whose date is Sat/Sun. Pull the already-tagged items straight through — **don't re-derive them**. Feed `[commitment]` and still-open `[action]` items into the personal log and the team digest's commitments line; cross-check `[deliverable]` items against git + the deliverables folder before claiming something shipped.
+
+- **Carry redaction forward verbatim.** Items already marked `[private — checkpoint comms]` stay collapsed — never expand them, even though the EOW output is also a draft.
+- **Flag gaps.** If a weekday in the window has no eod-recap file, note it (e.g. "_No eod-recap for Tue 06-03 — Slack-communicated items not captured that day._") so the user knows the Slack layer is partial, not that nothing was said.
+
 ## Classification rubric
 
 For each project cluster, classify the week's work:
 
 - **Shipped** — merged commits + matching deliverables entry, OR clear "done" status in memory
 - **In-progress** — commits but no deliverables entry yet, or memory marks it active
-- **Blocked** — transcript or memory mentions an unresolved blocker
+- **Blocked** — transcript, memory, or an eod-recap mentions an unresolved blocker
 - **Exploratory** — Claude Code activity but no commits, deliverables, or memory updates
+- **Committed** — an eod-recap holds an open `[commitment]`/`[action]` with no matching shipped artifact yet (something promised in Slack, still outstanding)
 
-Source weighting when signals conflict: **git > deliverables > memory > transcripts**.
+Source weighting when signals conflict: for **shipped work**, **git > deliverables > memory > transcripts**. For **what was communicated or committed**, the eod-recaps are authoritative — git/deliverables/memory can't see Slack, so don't down-rank a recap'd commitment just because there's no commit behind it yet.
 
 ## Output
 
@@ -103,6 +120,7 @@ Everything touched this week, by project. One bullet per project; sub-bullets fo
 - **<Project>** — <classification>
   - Commits: <hash short subjects>
   - Decisions: <one-liners>
+  - Commitments: <open [commitment]/[action] items from eod-recaps — who it's to + by when>
   - Blockers: <if any>
 
 ## 2. Team digest
@@ -114,6 +132,9 @@ Scannable view for the immediate team. Skip exploratory work here.
 
 **Decisions**
 - <one-line decision + rationale>
+
+**Commitments outstanding** _(from eod-recaps — what I told people I'd do, not yet shipped)_
+- <commitment> — to <whom> · <by when>
 
 **Blocked / needs input**
 - <project> — <what's blocking + what unblocks it>
