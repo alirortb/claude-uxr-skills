@@ -83,6 +83,8 @@ If a session touched only one repo, report flatly without per-repo headers. If m
 
 Do NOT push or open PRs unless the user explicitly asks (they may want to hold).
 
+**Backup verification (off-machine safety).** For any repo whose *only* off-machine copy is its git remote, treat **unpushed commits as unbacked** — flag them as "⚠️ unbacked: sole off-machine copy is the remote," not the neutral "unpushed-commits." Flagging is the action; pushing stays the user's call (per the rule above). Separately, if this session created or edited personal / non-repo files that live outside git and rely on a cloud backup sync, add a one-line reminder to run that sync. If the session touched neither case, stay silent on backups — don't manufacture a line.
+
 ### 6. Open threads
 
 A short list of what's not yet resolved:
@@ -134,7 +136,7 @@ Example shape:
 2. **Deliverables log** — wrote `2026-MM_<slug>.md` (75 lines, template followed).
 3. **LORE** — added "<entry title>" under Era N; substantive (minor bump).
 4. **TODOS** — captured RTS-N + RTS-N+1 as P3 follow-ups.
-5. **Git** — branch `<name>` at `<sha>`, pushed to PR #N (state: <state>).
+5. **Git + backup** — branch `<name>` at `<sha>`, pushed to PR #N (state: <state>); off-machine backup verified (or: ⚠️ N unpushed commits unbacked / run cloud sync for <files>).
 6. **Open threads** — <bullet list>
 7. **Tasks** — cleaned (N completed, M deleted, K still active for follow-up).
 8. **Plan alignment** — counts toward <workstream>; <X> days to <next checkpoint>; stakeholder-comms <state>.
