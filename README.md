@@ -81,15 +81,14 @@ Once the skills installer is configured:
 npx skills add alirortb/claude-uxr-skills
 ```
 
-Or clone and symlink each skill folder manually into `~/.claude/skills/`:
+Or clone and run the installer — it symlinks every skill folder (any dir with a `SKILL.md`) into `~/.claude/skills/` and is **safe to re-run**:
 
 ```
 git clone https://github.com/alirortb/claude-uxr-skills.git ~/dev/claude-uxr-skills
-ln -s ~/dev/claude-uxr-skills/research-docs ~/.claude/skills/research-docs
-ln -s ~/dev/claude-uxr-skills/prototype-audit ~/.claude/skills/prototype-audit
-ln -s ~/dev/claude-uxr-skills/eow-summary ~/.claude/skills/eow-summary
-ln -s ~/dev/claude-uxr-skills/eod-recap ~/.claude/skills/eod-recap
+cd ~/dev/claude-uxr-skills && ./install.sh
 ```
+
+> Don't hand-write `ln -s ... ~/.claude/skills/<skill>` per skill: on macOS, re-running it once the symlink exists nests a recursive self-link *inside* the target dir. `install.sh` replaces the link in place instead, so re-running is harmless.
 
 ## Design principles
 
