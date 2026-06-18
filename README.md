@@ -4,12 +4,12 @@ Personal [Claude Code](https://claude.com/claude-code) skills for UXR/ReOps work
 
 ## Positioning
 
-This repo is **personal R&D space** for skills I use day-to-day. It **complements** team-distributed skill collections like [`miroapp-dev/uxr-skills`](https://github.com/miroapp-dev/uxr-skills) (the `customer-insights` skill and related) — it is **not a fork, alternative, or competitor**. Where workflows overlap, my skills hand off to the team skills via informational pointers rather than duplicating their logic. Skills here may be PR'd upstream once they've earned the keep across multiple real uses.
+This repo is **personal R&D space** for skills I use day-to-day. It **complements** my team's internal, team-distributed skill collections (such as the `customer-insights` skill and related) — it is **not a fork, alternative, or competitor**. Where workflows overlap, my skills hand off to the team skills via informational pointers rather than duplicating their logic. Skills here may be PR'd upstream once they've earned the keep across multiple real uses.
 
 ## Skills
 
 - **[`research-docs`](./research-docs/)** — Generate UXR plan, interview guide, or insights one-pager. Bookends `customer-insights` (BEFORE + AFTER stages); never replicates transcript analysis or synthesis.
-- **[`prototype-audit`](./prototype-audit/)** — Read-only safety check for prototype repos against the [design-team prototype playbook](https://github.com/miroapp-dev/prototype-playbook). Surfaces state plainly for non-technical users; never auto-fixes.
+- **[`prototype-audit`](./prototype-audit/)** — Read-only safety check for prototype repos against the design-team prototype playbook. Surfaces state plainly for non-technical users; never auto-fixes.
 - **[`eow-summary`](./eow-summary/)** — Generate an end-of-week summary by scanning Claude Code transcripts, `~/dev/*` git activity, `~/dev/deliverables/` entries, and project memory. Produces a layered draft (personal log, team digest, AI Design Guild candidates) for editing before sharing.
 - **[`eod-recap`](./eod-recap/)** — End-of-day recap of action items, deliverables, and commitments pulled from the Slack messages *you* sent today. Writes a dated daily log and flags deliverable-worthy items. Daily sibling of `eow-summary`. Requires a connected Slack MCP.
 
