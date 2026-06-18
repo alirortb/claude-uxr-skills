@@ -11,7 +11,7 @@ Generate the documentation artifacts that **bookend** a UX research study:
 - `guide` — DURING (conduct + document)
 - `one-pager` — AFTER (synthesize + share)
 
-This skill deliberately **stops short of transcript analysis and synthesis** — those are owned by the team's `customer-insights` skill (`github.com/miroapp-dev/uxr-skills`). Where the workflows meet, this skill prints a handoff pointer. It never replicates analysis logic, re-extracts quotes, or restates the team's quality rules.
+This skill deliberately **stops short of transcript analysis and synthesis** — those are owned by the team's `customer-insights` skill (in the team's internal skills repo). Where the workflows meet, this skill prints a handoff pointer. It never replicates analysis logic, re-extracts quotes, or restates the team's quality rules.
 
 ## When to use
 
@@ -29,7 +29,7 @@ If the user's intent is unambiguous from the request, run the matching mode. If 
 
 - **Non-intrusive.** Don't impose a folder structure. Write to the current working directory unless the user specifies a path. Don't read from or write to folders owned by other skills.
 - **No analysis duplication.** The synthesis step is owned by `customer-insights`. This skill never extracts quotes from transcripts, never runs verification passes, never invents themes.
-- **Reference, don't restate.** When the team's quality rules apply (citation format, verbatim quotes, confidence flags), point at `github.com/miroapp-dev/uxr-skills` rather than re-stating them. Single source of truth.
+- **Reference, don't restate.** When the team's quality rules apply (citation format, verbatim quotes, confidence flags), point at the team's internal `customer-insights` skill rather than re-stating them. Single source of truth.
 - **Surface your assumptions.** After generating any artifact, list every framing call made that wasn't directly stated in inputs — e.g., session length derived from a participant-count math, research questions split from a single-line objective, defaults pulled from project memory. The user owns acceptance, not the skill. This is non-negotiable: a draft without flagged assumptions is incomplete.
 - **Filename convention.** If writing into a study-named folder (e.g., `~/dev/<study-slug>/`), use bare names: `plan.md`, `guide.md`, `one-pager.md`. Otherwise prefix with the study slug: `<study-slug>-plan.md`. Avoids redundant doubled slugs in the common case.
 - **Plain language.** Researchers and designers are the primary audience.
@@ -121,7 +121,7 @@ Write to `<study-name>-plan.md` in the current directory (or path the user speci
 
 1. Review and edit this plan with stakeholders.
 2. When ready to draft the interview guide: run `/research-docs guide`.
-3. When interviews are complete and you have transcripts: run `/customer-insights` (team skill — `github.com/miroapp-dev/uxr-skills`) for analysis. Use the context block below as input.
+3. When interviews are complete and you have transcripts: run `/customer-insights` (team skill) for analysis. Use the context block below as input.
 
 ### Context block for `/customer-insights`
 
@@ -240,7 +240,7 @@ If any question fails a check, rewrite it using the DO patterns in the rubric be
 - Lead questions must be **open** (no yes/no, no leading).
 - Probes follow the "tell me about a time…" pattern over hypotheticals.
 - Apply the moderation rubric below while drafting. Every lead question and probe must pass the three checks (open / neutral / past-or-present) before it lands in the output.
-- Per-section **Goal** lines and ***Listen for:*** italicized cues are required, not optional — they match the canonical Miro UXR guide pattern. Source references in [[reference_uxr_discussion_guide_sources]].
+- Per-section **Goal** lines and ***Listen for:*** italicized cues are required, not optional — they match the canonical Miro UXR guide pattern.
 - Use conditional probes (`*(If they mention X)* … *(If they don't)* …`) only when there's a real fork in the conversation. Don't force them in.
 - Tune the Post-session summary fields to the study's research questions; the default block is a starting point, not a fixed schema.
 
@@ -252,7 +252,7 @@ If any question fails a check, rewrite it using the DO patterns in the rubric be
 ## Next steps
 
 1. Pilot this guide with one teammate before real sessions — surface confusing wording.
-2. After interviews, analyze with `/customer-insights` (team skill — `github.com/miroapp-dev/uxr-skills`).
+2. After interviews, analyze with `/customer-insights` (team skill).
 3. When you have analyzed insights, run `/research-docs one-pager` to share findings.
 ```
 
@@ -277,8 +277,8 @@ Two questions before generating. Ask both; don't guess either.
 Ask by *outcome*, never by mechanism — the user picks by what they'll do next, not by tooling. Mark the recommendation inline. Surface the decision axis (editable vs. static, works-anywhere vs. needs-a-tool) in each option's trailing clause — that clause is what lets a non-technical user self-identify what they need.
 
 - **(a) Just the markdown file** *(Recommended — always works; paste it anywhere yourself)* → write `one-pager.md` and stop.
-- **(b) A polished page to share or present** → render the self-contained HTML one-pager ([[reference_html_one_pager_workflow]]); static, not editable in place.
-- **(c) Our team's Miro one-pager (frame + 3 blocks), editable on the board** → *requires the `miroctl` CLI* (the team's Miro write tool — command knowledge lives in `miroapp-dev/miroctl-skill`). Check it's available first. If it is, push to the canonical frame + three-blocks format (see *Pushing to Miro* below). **If not available, do not dead-end the user** — generate `one-pager.md` and print explicit paste-into-Miro / embed steps instead.
+- **(b) A polished page to share or present** → render the self-contained HTML one-pager; static, not editable in place.
+- **(c) Our team's Miro one-pager (frame + 3 blocks), editable on the board** → *requires the team's Miro write CLI* (`miroctl`; command knowledge lives in the team's internal Miro CLI skill). Check it's available first. If it is, push to the canonical frame + three-blocks format (see *Pushing to Miro* below). **If not available, do not dead-end the user** — generate `one-pager.md` and print explicit paste-into-Miro / embed steps instead.
 
 Default to **(a)** if the user has no preference. Never silently choose a destination — especially never auto-push to Miro (a Doc dump is the failure mode this gate exists to prevent).
 
@@ -325,25 +325,25 @@ Write to `<study-name>-one-pager.md`.
 - Each insight is **singular** — not a roll-up of multiple points.
 - If quoting participants, preserve the source's citation format exactly. For `customer-insights` output, that means `[P02/Name ~14:30]` style — see the team skill repo for the canonical rules.
 - Do not re-extract, paraphrase, or recombine quotes from source material.
-- **Miro output is paste-only by default; the destination is set by the preflight gate, never chosen silently.** Push only when the gate's question 2 returns **(c)** *and* `miroctl` is available — and target the canonical **frame + three blocks** format, *never* a Miro Doc (a Doc dump is the failure mode this gate exists to prevent). See *Pushing to Miro (frame + 3 blocks)* below for the layout this skill owns; `miroctl-skill` owns the exact payloads and brand styling — don't restate its command syntax or hand-pick styling here ([[feedback_complement_dont_duplicate]]).
+- **Miro output is paste-only by default; the destination is set by the preflight gate, never chosen silently.** Push only when the gate's question 2 returns **(c)** *and* `miroctl` is available — and target the canonical **frame + three blocks** format, *never* a Miro Doc (a Doc dump is the failure mode this gate exists to prevent). See *Pushing to Miro (frame + 3 blocks)* below for the layout this skill owns; the team's Miro CLI skill owns the exact payloads and brand styling — don't restate its command syntax or hand-pick styling here.
 
 ### Pushing to Miro (frame + 3 blocks)
 
-Runs **only** when the destination gate returns **(c)**. The team's Miro write CLI is `miroctl` (command knowledge lives in `miroapp-dev/miroctl-skill`).
+Runs **only** when the destination gate returns **(c)**. The team's Miro write CLI is `miroctl` (command knowledge lives in the team's internal Miro CLI skill).
 
 **Preconditions — check, never assume, never act on the user's behalf:**
 
 - **Installed?** If `miroctl` isn't installed, fall back to `one-pager.md` + paste steps — don't dead-end.
 - **Authenticated?** Check `miroctl auth status`. If there's no token, **stop and prompt the user to connect it themselves** — `miroctl auth login` opens *their* browser (scopes `boards:read boards:write`). Auth is the user's runtime step, scoped to their own Miro account — never embed a token, never try to log in for them. Wait for them to confirm they're connected, or fall back to paste steps if they'd rather not.
 
-This skill owns the **layout**; `miroctl-skill` owns the **payloads and brand styling**. Hand off the layout below; do not restate `miroctl` command syntax or hand-pick hex values here.
+This skill owns the **layout**; the team's Miro CLI skill owns the **payloads and brand styling**. Hand off the layout below; do not restate `miroctl` command syntax or hand-pick hex values here.
 
 1. **Board** — ask for a Miro board URL or ID; extract the ID with `board/([^/]+)/?`.
 2. **Frame** — one frame, title = `<Study Title>`. Size it for a header line plus three stacked blocks.
 3. **Three blocks** — block 01 / 02 / 03 each map to one insight (title + 3–5 sentence detail), stacked vertically and evenly spaced. The frame header carries author + tags.
 4. **Parenting** — place each block inside the frame via the nested `"parent":{"id":"<frame-id>"}` form (the flat `parentId` field is rejected with 400).
-5. **Coordinates are center-based inside a frame** — a child's `x`/`y` is its *center*, valid within `[0, frame_width] × [0, frame_height]` (per the authoritative `miroctl` items reference; this supersedes the older top-left framing in [[feedback_miro_api_parent_coords]]).
-6. **Styling** — pull colors/fonts from the team brand tokens (`miroctl-presentation` brand reference); don't hand-pick them.
+5. **Coordinates are center-based inside a frame** — a child's `x`/`y` is its *center*, valid within `[0, frame_width] × [0, frame_height]` (per the authoritative `miroctl` items reference).
+6. **Styling** — pull colors/fonts from the team brand tokens; don't hand-pick them.
 
 After pushing, give the board link and confirm exactly **1 frame + 3 blocks** landed.
 
@@ -355,7 +355,7 @@ After pushing, give the board link and confirm exactly **1 frame + 3 blocks** la
 ## Where this came from
 
 Insights synthesized via: <(a) customer-insights | (b) manual / other tool>
-Quote conventions follow: `github.com/miroapp-dev/uxr-skills` (if applicable)
+Quote conventions follow: the team's `customer-insights` skill (if applicable)
 ```
 
 ---
