@@ -83,7 +83,12 @@ If a session touched only one repo, report flatly without per-repo headers. If m
 
 Do NOT push or open PRs unless the user explicitly asks (they may want to hold).
 
-**Backup verification (off-machine safety).** For any repo whose *only* off-machine copy is its git remote, treat **unpushed commits as unbacked** — flag them as "⚠️ unbacked: sole off-machine copy is the remote," not the neutral "unpushed-commits." Flagging is the action; pushing stays the user's call (per the rule above). Separately, if this session created or edited personal / non-repo files that live outside git and rely on a cloud backup sync, add a one-line reminder to run that sync. If the session touched neither case, stay silent on backups — don't manufacture a line.
+**Backup verification (off-machine safety).** Two cases, handled asymmetrically:
+
+- **Git remotes (flag, don't act).** For any repo whose *only* off-machine copy is its git remote, treat **unpushed commits as unbacked** — flag them as "⚠️ unbacked: sole off-machine copy is the remote" (not the neutral "unpushed-commits") and surface the exact one-line push command. **Flagging is the action; pushing / PR / merge stays the user's call** (per the rule above) — push policy varies by repo (some are PR-only / no-direct-push / no-force-push), so never auto-push.
+- **Non-git personal files (run it, then report).** Personal / non-repo files written this session that live outside git and rely on a cloud backup sync are a *different* risk: they have no git history to recover from, and a well-formed sync is **one-way + additive (no deletes)**, so there's no "might want to hold" judgment. If such a sync is configured, **run it as part of closeout and report the result** — don't merely remind.
+
+If the session touched neither case, stay silent on backups — don't manufacture a line.
 
 ### 6. Open threads
 
