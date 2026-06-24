@@ -125,7 +125,8 @@ Omit any section with no items rather than printing an empty heading. The `## Me
 The Deliverables Log (`~/dev/deliverables/`) is a **polished evidence file** — every entry uses a core-five format (Problem / Solution / AI proficiency / Value / Links). Do **not** auto-append raw `[deliverable]` lines there; that pollutes the folder.
 
 Instead, after writing the daily recap:
-- If any `[deliverable]` item looks like it crossed a real ship threshold, list those as **"Deliverables-Log candidates"** in the closing summary.
+- **Dedup pre-check (label, don't gate).** Before listing candidates, scan the existing log — `ls ~/dev/deliverables/*.md` plus the README index — for entries on the same project, person, or artifact. Tag each candidate **"likely new"** or **"possibly overlaps `<existing-file>` — confirm distinct vs duplicate."** This is a label for a human call, *not* a filter: an item can overlap an existing entry and still be a genuinely distinct deliverable (e.g. a study *vehicle* vs. the *audience pull* that feeds it), so surface the overlap — never auto-skip it.
+- If any `[deliverable]` item looks like it crossed a real ship threshold, list those as **"Deliverables-Log candidates"** in the closing summary, each carrying its dedup label.
 - Offer: "Want me to draft a core-five Deliverables Log entry for any of these?" — and only write to `~/dev/deliverables/` if the user says yes, using the format in `~/dev/deliverables/README.md`.
 
 ## After writing the file
@@ -133,7 +134,7 @@ Instead, after writing the daily recap:
 Print to the user:
 1. The output file path.
 2. The Metrics snapshot: category coverage, deliverables shipped, commitments made, messages scanned · items kept · channels touched. Call out any workstream sitting at 0 — that imbalance is the signal worth seeing.
-3. The list of any Deliverables-Log candidates, with the offer to draft proper entries.
+3. The list of any Deliverables-Log candidates (each tagged likely-new vs. possibly-already-logged), with the offer to draft proper entries.
 4. Reminder: "Draft — edit before relying on it."
 
 ## Rules
