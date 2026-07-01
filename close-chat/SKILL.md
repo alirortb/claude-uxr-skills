@@ -90,6 +90,21 @@ Do NOT push or open PRs unless the user explicitly asks (they may want to hold).
 
 If the session touched neither case, stay silent on backups — don't manufacture a line.
 
+**Resolve-now vs. defer-to-next-move (decision tree).** "Flag, don't act" means *don't auto-push* — it does **NOT** mean *defer the decision to next session*. A flagged item is resolved **within this closeout** (done, or an explicit yes/no asked before the checklist completes); it must never silently graduate into the step-9 "next move." Apply this test to every candidate action:
+
+**Resolve BEFORE `/close-chat` completes if it passes ANY of:**
+- **Durability / irrecoverable-loss** — deferring risks losing work or state that can't be reconstructed (unbacked sole-copy commit, unsaved artifact, uncommitted diff about to be lost). *Highest priority — overrides the "flag, don't act" reflex.*
+- **In-context & bounded** — fully doable now with what's already loaded, ~one command, and cheaper/less error-prone now (context is warm) than reconstructed cold next session.
+- **Cheap-and-authorized** — low-risk *and* already authorized explicitly or by clear intent (e.g. "commit for future use" = durability intent → the commit isn't "for future use" until it's off-machine).
+
+**Genuine *next move* (defer) if ANY of:**
+- Needs an **external dependency or another party** (awaiting review, merge, data, team agreement).
+- Requires a **decision the user hasn't made** and can't sensibly make at closeout.
+- Is **fresh work beyond wrap-up scope** (new feature, refactor).
+- The user **explicitly said hold**.
+
+Outward/irreversible actions (push, PR, send) still need the user's yes — but **ask for it now**, during closeout, not next session. Matching the backup asymmetry above: non-git cloud-sync files → *run it, then report*; git remote (sole off-machine copy) → *flag → ask → act on yes*, all within closeout.
+
 ### 6. Open threads
 
 A short list of what's not yet resolved:
@@ -120,6 +135,8 @@ Skip explicitly if the session was purely tactical (debug, doc fix) with no plan
 ### 9. Next move
 
 One concrete sentence describing the **first thing the user should do** when they pick up next session. Not a vague "continue the work" — a specific action with the names + numbers + paths already filled in.
+
+First run the resolve-now-vs.-defer test (see step 5): anything that fails it — a durability/backup item, a bounded in-context action, a cheap-and-authorized step — is resolved *during* closeout, not parked here. The "next move" is only what genuinely defers (blocked, undecided, or fresh scope). A sole-copy unpushed commit must never be the next move.
 
 Good examples:
 - "Tomorrow morning: update the campaign batch config → export the per-segment CSVs → fire the scheduled sends → post the final daily status update."
