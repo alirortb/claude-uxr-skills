@@ -326,7 +326,7 @@ Write to `<study-name>-one-pager.md`.
 
 ### Rules
 
-- Exactly **three** insights. If the user has more, ask them to pick the top three before generating.
+- Exactly **three** insights. If the user has **more**, ask them to pick the top three before generating. If they have **fewer than three**, produce a partial one-pager with only the insights provided — clearly marked incomplete, empty slots labeled — and **never fabricate insights** to fill the template.
 - Each insight is **singular** — not a roll-up of multiple points.
 - **Confidence gate.** Before an insight makes the top three, sanity-check its support against the rule of thumb: a point made by **1 participant is "interesting"; 3+ is a "trend."** Fewer than 3 supporting sources → label it **directional**, don't present it with false confidence. If the provided insights are all single-source, say so plainly rather than dressing them up.
 - **Follow the story arc.** Order the one-pager so it reads objective → findings → implications, not a flat list. Each insight must make clear *what it means* (the implication for the product/team), not just *what was said*.
