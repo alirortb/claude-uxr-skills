@@ -5,13 +5,13 @@ description: Generate UXR plan, interview guide, or insights one-pager — compl
 
 # Research Docs
 
-Generate the documentation artifacts that **bookend** a UX research study:
+UX research runs in four stages — **Plan → Conduct → Analyze → Share**. This skill owns the *documentation artifacts* for three of them:
 
-- `plan` — BEFORE (plan + recruit)
-- `guide` — DURING (conduct + document)
-- `one-pager` — AFTER (synthesize + share)
+- `plan` — **Plan** (plan + recruit)
+- `guide` — **Conduct** (moderate + document)
+- `one-pager` — **Share** (distill + report)
 
-This skill deliberately **stops short of transcript analysis and synthesis** — those are owned by the team's `customer-insights` skill (in the team's internal skills repo). Where the workflows meet, this skill prints a handoff pointer. It never replicates analysis logic, re-extracts quotes, or restates the team's quality rules.
+**Analyze** — transcript synthesis, quote extraction, theme-finding, confidence checks — is deliberately **out of scope**. It's owned by the team's `customer-insights` skill. Where the workflows meet, this skill prints a handoff pointer. It never replicates analysis logic, re-extracts quotes, or restates the team's quality rules.
 
 ## When to use
 
@@ -111,6 +111,8 @@ Write to `<study-name>-plan.md` in the current directory (or path the user speci
 ### Rules
 
 - **TL;DR block is required, not optional.** It gives a skimming stakeholder the objective / method / n / timeline / decision in under 60 seconds without scrolling. Populate every field from the plan content below it — never leave a bracketed placeholder. It summarizes; it does not replace any section.
+- **Sampling must be defensible, not convenient.** State the segmentation criteria that define the target sample — role, behavior thresholds, health/at-risk cut — not "whoever we can recruit." A reader should see *why* these participants can answer the objective.
+- **Define the reporting plan before fielding, not after.** The Reporting section is not a placeholder — deliverables, audiences, and channels are decided up front, so the study is built toward a known shareout.
 
 ### Handoff footer (always append)
 
@@ -119,7 +121,7 @@ Write to `<study-name>-plan.md` in the current directory (or path the user speci
 
 ## Next steps
 
-1. Review and edit this plan with stakeholders.
+1. Review this plan and get async stakeholder sign-off *before* fielding — collect comments by section, resolve them, confirm a lead has signed off.
 2. When ready to draft the interview guide: run `/research-docs guide`.
 3. When interviews are complete and you have transcripts: run `/customer-insights` (team skill) for analysis. Use the context block below as input.
 
@@ -168,11 +170,13 @@ Write to `<study-name>-guide.md`.
 **Recording:** <tool + consent reminder>
 
 ## 0. Intro & warm-up (5 min)
-**Goal:** Build rapport, confirm consent, frame the session.
+**Goal:** Build rapport, confirm consent, frame the session, set scope.
 
+- Small talk *before* recording — where you're from, your role — to settle nerves
 - Thank participant + confirm consent + recording
 - Brief intro: who we are, what we're learning, no right answers
-- Warm-up: "Tell me about your role" / equivalent
+- **Scope line:** "We're here to learn about <X>; we won't go deep on <Y>." — keeps a talkative participant from consuming the session on tangents
+- Warm-up (broad + safe): "Tell me about your role" / "How long have you been using <product>?"
 
 ## 1. <Section name — maps to research question 1> (~N min)
 **Goal:** <one sentence on what this section unpacks>
@@ -204,22 +208,21 @@ Write to `<study-name>-guide.md`.
 
 ---
 
-## Post-session summary (2 min, immediately after)
+## Post-session summary (5–10 min, immediately after)
 
-Complete on the shared board right after the session — waiting loses the nuance. Default fields below; tune to match the study's actual research questions.
+The best time to reflect is the 5–10 minutes right after the session, while it's fresh — waiting loses the nuance. Capture on the shared board. Default fields below; tune to match the study's actual research questions.
 
 | Field | Entry |
 | --- | --- |
-| Participant name + segment | |
-| Role, company, team size | |
-| Primary use case | (1–2 words) |
-| Key moment / trigger | (1 sentence in their words) |
-| Core value in their words | (verbatim quote) |
-| Hardest to replace | |
-| Tool overlap mentioned | |
+| Overview | (2–3 sentence narrative of the session) |
+| Participant + segment | name, role, company, team size; inferred new/existing |
+| Classification confidence | Low / Medium / High — how sure are you of the segment? |
+| Findings by research question | RQ1… RQ2… (organize by RQ, **not** chronologically) |
+| Notable quotes | verbatim, attributed, chosen for evidentiary weight |
 | Risk / churn signal | Low / Medium / High — gut read |
-| Top 2–3 takeaways | (in their words where possible) |
-| Memorable quotes | |
+| Open threads | follow-ups, unresolved questions, product/eng routing items |
+
+**Debrief prompts** (answer while it's fresh): What stood out? Anything unexpected? What might this mean?
 
 ---
 
@@ -236,12 +239,14 @@ If any question fails a check, rewrite it using the DO patterns in the rubric be
 
 ### Rules
 
-- One section per research question; cap at 4-5 sections for a 45-min session.
+- One section per research question; cap at 4-5 sections for a 45-min session. (Behind the guide, aim to have 5–10 prioritized key questions you must not leave without.)
+- **Structure for a fluid conversation, not a rigid script.** Start broad and safe, then follow the thread of the participant's own story deeper. The section **Goal** lines keep you on track while you listen — you glance at the goal, you don't read questions verbatim.
 - Lead questions must be **open** (no yes/no, no leading).
 - Probes follow the "tell me about a time…" pattern over hypotheticals.
 - Apply the moderation rubric below while drafting. Every lead question and probe must pass the three checks (open / neutral / past-or-present) before it lands in the output.
 - Per-section **Goal** lines and ***Listen for:*** italicized cues are required, not optional — they match the canonical Miro UXR guide pattern.
 - Use conditional probes (`*(If they mention X)* … *(If they don't)* …`) only when there's a real fork in the conversation. Don't force them in.
+- **Under time pressure, protect coverage.** The section goals + timings are your coverage map — if you're running short, consciously drop lower-priority probes to preserve one lead question per research question, rather than rushing the final section.
 - Tune the Post-session summary fields to the study's research questions; the default block is a starting point, not a fixed schema.
 
 ### Handoff footer (always append)
@@ -251,7 +256,7 @@ If any question fails a check, rewrite it using the DO patterns in the rubric be
 
 ## Next steps
 
-1. Pilot this guide with one teammate before real sessions — surface confusing wording.
+1. Async peer review before fielding — share for comments, then pilot with one teammate to surface confusing wording. New moderators: complete moderation training first.
 2. After interviews, analyze with `/customer-insights` (team skill).
 3. When you have analyzed insights, run `/research-docs one-pager` to share findings.
 ```
@@ -323,6 +328,10 @@ Write to `<study-name>-one-pager.md`.
 
 - Exactly **three** insights. If the user has more, ask them to pick the top three before generating.
 - Each insight is **singular** — not a roll-up of multiple points.
+- **Confidence gate.** Before an insight makes the top three, sanity-check its support against the rule of thumb: a point made by **1 participant is "interesting"; 3+ is a "trend."** Fewer than 3 supporting sources → label it **directional**, don't present it with false confidence. If the provided insights are all single-source, say so plainly rather than dressing them up.
+- **Follow the story arc.** Order the one-pager so it reads objective → findings → implications, not a flat list. Each insight must make clear *what it means* (the implication for the product/team), not just *what was said*.
+- **Trace every claim to evidence.** Each insight rests on a quote or observation from the source. Don't state a conclusion the provided insights don't support — no orphaned recommendations.
+- **De-identify for broad sharing.** A one-pager is a broadly-shared artifact — use anonymized quotes and no raw PII (no last names, no un-consented recording links). Identifiable, raw session data stays with the core team; the fix for wider demand is more synthesized artifacts, not wider raw access.
 - If quoting participants, preserve the source's citation format exactly. For `customer-insights` output, that means `[P02/Name ~14:30]` style — see the team skill repo for the canonical rules.
 - Do not re-extract, paraphrase, or recombine quotes from source material.
 - **Miro output is paste-only by default; the destination is set by the preflight gate, never chosen silently.** Push only when the gate's question 2 returns **(c)** *and* `miroctl` is available — and target the canonical **frame + three blocks** format, *never* a Miro Doc (a Doc dump is the failure mode this gate exists to prevent). See *Pushing to Miro (frame + 3 blocks)* below for the layout this skill owns; the team's Miro CLI skill owns the exact payloads and brand styling — don't restate its command syntax or hand-pick styling here.
