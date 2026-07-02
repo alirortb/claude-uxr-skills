@@ -171,7 +171,7 @@ Generate an interview guide from an existing plan. If no plan is provided, ask f
 - Thank participant + confirm consent + recording
 - Brief intro: who we are, what we're learning, no right answers
 - **Scope line:** "We're here to learn about <X>; we won't go deep on <Y>." — keeps a talkative participant from consuming the session on tangents
-- Warm-up (broad + safe): "Tell me about your role" / "How long have you been using <product>?"
+- Warm-up (broad + safe): "Tell me about your role" / "How long have you been using Miro?"
 
 ## 1. <Section name — maps to research question 1> (~N min)
 **Goal:** <one sentence on what this section unpacks>
@@ -183,7 +183,7 @@ Generate an interview guide from an existing plan. If no plan is provided, ask f
   - Can you walk me through the last time...?
   - *(If they mention X)* Tell me more about that — what triggered it?
   - *(If they don't)* How does X show up in your work, if at all?
-- **(Segment-gated, optional):** <e.g., "For at-risk participants only: What made you start using <product> less?">
+- **(Segment-gated, optional):** <e.g., "For at-risk participants only: What made you start using Miro less?">
 
 ## 2. <Section name — maps to research question 2> (~N min)
 **Goal:** ...
@@ -377,7 +377,7 @@ Lead questions in an interview guide should be **open**. Closed questions are fi
 
 | DON'T | DO |
 | --- | --- |
-| "Let's start with question 1…" | "Tell me a bit about how you typically use <product>." |
+| "Let's start with question 1…" | "Tell me a bit about how you typically use Miro." |
 | "Please list all the collaboration tools you use." | "What tools do you and your team typically use to collaborate?" |
 | "Describe your perception of innovation." | "I'd love to hear how you define innovation in the context of your work." |
 
@@ -385,17 +385,17 @@ Lead questions in an interview guide should be **open**. Closed questions are fi
 
 | DON'T | DO |
 | --- | --- |
-| "Don't you think <product> is one of the best tools for this?" | "What tools come to mind when you think of this?" |
+| "Don't you think Miro is one of the best innovation tools?" | "What tools come to mind when you think of innovation?" |
 | "Did the translated content confuse you?" | "How well does the translated version work for you in your day-to-day tasks?" |
-| "Do you agree that <feature> is useful for planning?" | "What features help you plan or move from ideas into action?" |
+| "Do you agree that Tables & Timelines are useful for planning?" | "What features help you plan or move from ideas into action?" |
 
 **Staying in the present or past**
 
 | DON'T | DO |
 | --- | --- |
-| "Would you use <product> more if it were better translated?" | "Can you think of a time when a translation felt off or unclear?" |
-| "What would you do if we added more templates?" | "How often have you looked for a template? Walk me through your process." |
-| "How would you use <feature> in the future?" | "Tell me about the last time you did something like this. What made it work?" |
+| "Would you use Miro more if the language was better translated?" | "Can you think of a time when a translation in Miro felt off or unclear?" |
+| "What would you do if we added more localized templates?" | "How often have you looked for a template in your language? Walk me through your process." |
+| "How would you use the Innovation Workspace in the future?" | "Tell me about the last time you did something innovative in Miro. What made it work?" |
 
 ### How `guide` mode uses this rubric
 
