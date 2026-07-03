@@ -94,7 +94,7 @@ For each project cluster, classify the week's work:
 - **In-progress** — commits but no deliverables entry yet, or memory marks it active
 - **Blocked** — transcript, memory, or an eod-recap mentions an unresolved blocker
 - **Exploratory** — Claude Code activity but no commits, deliverables, or memory updates
-- **Committed** — an eod-recap holds an open `[commitment]`/`[action]` with no matching shipped artifact yet (something promised in Slack, still outstanding)
+- **Committed** — an eod-recap holds a `[commitment]`/`[action]` with neither a matching shipped artifact nor a later recap fulfillment/closer note (something promised in Slack, still genuinely outstanding — not merely lacking a git trail; see the closure rule under "Computing the metrics rollup")
 
 Source weighting when signals conflict: for **shipped work**, **git > deliverables > memory > transcripts**. For **what was communicated or committed**, the eod-recaps are authoritative — git/deliverables/memory can't see Slack, so don't down-rank a recap'd commitment just because there's no commit behind it yet.
 
@@ -126,6 +126,11 @@ Everything touched this week, by project. One bullet per project; sub-bullets fo
 ## 2. Team digest
 
 Scannable view for the immediate team. Skip exploratory work here.
+
+**★ Key wins** _(the 2–4 flagship deliverables — the highlight reel you'd paste into a checkpoint or manager update)_
+- <flagship win> — <one-line value/outcome + link>
+
+Pick the wins on **impact/visibility**, not volume: a launch, a shipped prototype, a closed negotiation, a program milestone. Distinct from "Shipped this week" below (which is the exhaustive list) — these are the headline few, each with its *value*, not just what it was. Skip routine/maintenance work here even if it shipped. If nothing rose above routine this week, write "_No flagship wins this week — see Shipped below._" rather than padding it.
 
 **Shipped this week**
 - <project> — <one-line outcome + link to deliverable or PR>
@@ -179,8 +184,9 @@ _If `~/dev/eod-recaps/taxonomy.local.md` is absent or no eod-recap files fell in
 ## Computing the metrics rollup
 
 - **Coverage** — tally the category tags on items in this week's eod-recap files. Carry the tags straight from the files; don't re-categorize. Exclude `Meta`/`[private — checkpoint comms]` items. Surface any category at 0.
-- **Closure rate** — of `[commitment]` items logged *this week*, how many have a matching shipped artifact (a commit/PR in git or a deliverables entry) — best-effort match on project/topic. Ambiguous matches count as open, labeled "(unverified)".
-- **Open commitments + aging** — scan **all** `~/dev/eod-recaps/YYYY-MM-DD.md` files (the daily files are the persistence — no separate ledger). For each `[commitment]` with no matching shipped artifact: age = window-end date − the date it was first logged; overdue = a stated due date now past. Only files named as ISO dates — skip `taxonomy.local.md` and anything else.
+- **Closure rate** — of `[commitment]` items logged *this week*, how many are closed. A commitment counts as closed if **either** (a) it has a matching shipped artifact (a commit/PR in git or a deliverables entry), **or** (b) a later eod-recap contains a matching fulfillment/closer note (a `[deliverable]` or an explicit "closes X" — the "X/Y booked", "invites sent", "screener live" recruitment signals the daily is told to capture). Best-effort match on project/topic + recipient. Ambiguous matches count as open, labeled "(unverified)".
+  - **No-git commitments need a Slack/recap match, not a git one.** Recruitment, participant-ops, email sends, and other ReOps promises leave **no git/deliverables artifact by design** — do not default them to "overdue" for lacking one. Their closure evidence lives only in a later eod-recap. If a due date has passed and you find *neither* an artifact nor a recap closer, flag it **"unconfirmed — no artifact + no-git delivery; confirm with the user"**, NOT a hard "overdue" — a thin/missed daily recap (the sweep under-pulls DMs) is a known failure mode that has mis-flagged a delivered commitment as overdue.
+- **Open commitments + aging** — scan **all** `~/dev/eod-recaps/YYYY-MM-DD.md` files (the daily files are the persistence — no separate ledger). For each `[commitment]` with neither a shipped artifact nor a later recap closer note: age = window-end date − the date it was first logged; overdue = a stated due date now past. For a **no-git-class** commitment (recruitment/participant/send ops) past its due date with no match, prefer "unconfirmed — confirm with user" over "overdue" (see closure rule above). Only files named as ISO dates — skip `taxonomy.local.md` and anything else.
 - **Shipped-vs-said** — `[deliverable]` items with a real artifact behind them (git/deliverables) ÷ all `[deliverable]` items this week.
 - **Throughput** — deliverables shipped this week vs. the prior week's eow-summary metrics block (if present).
 
@@ -210,7 +216,7 @@ If a metrics generator script exists (e.g. `~/dev/eow-summaries/gen-metrics.py`)
 
 1. Print to the user:
    - The output file path + that the living dashboard HTML was refreshed
-   - A 3-line summary: # projects touched, # shipped, # Guild candidates
+   - A 3-line summary: # projects touched, # shipped, # Guild candidates — and name the ★ key wins (the flagship few)
    - The metrics headline: coverage by category (flag any at 0), closure rate, open/overdue commitments
    - Reminder: "Draft — edit before sharing."
 

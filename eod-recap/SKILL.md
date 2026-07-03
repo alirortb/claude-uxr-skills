@@ -47,6 +47,13 @@ sort_dir: "asc"
 - `include_context: true` is useful: the surrounding thread tells you *what* a commitment was in response to, which sharpens the extracted item.
 - If `0 results`, try a semantic phrasing or widen to `after:<yesterday>` to confirm the filter is right before reporting an empty day.
 
+**Completeness self-check (the search under-pulls — catch it).** The `from:` sweep sometimes returns far fewer messages than were actually sent, especially **1:1 DMs**, which have silently dropped whole deliveries (a real miss: a "15/15 booked" recruitment delivery in a DM never made it into a recap that logged only 3 messages, then read as an overdue commitment a week later). Guard against it:
+- After paging to exhaustion, sanity-check the count. On any normal working day a single scanned message is a red flag; **fewer than ~8 kept-or-scanned on a day the user clearly worked is "probably incomplete," not "a quiet day."** When it looks thin, re-run the sweep with a semantic phrasing and with `sort:timestamp sort_dir:asc`, and run the supplemental sweep below before concluding.
+- **Supplemental targeted sweep — always run it, don't rely on the `from:` pull alone.** Recruitment/participant-ops deliveries are high-value, live in DMs and participant-coordination channels, and leave **no git footprint** (so the weekly rollup can't recover them if the daily misses them). After the primary pull, run a few extra `from:<@self> on:YYYY-MM-DD` searches seeded with fulfillment keywords to force those threads to surface:
+  - `from:<@self> on:DATE (booked OR invites OR "reached out" OR reachout OR screener OR participants OR recruited OR "pulled" OR study)`
+  - and a bare DM-only pass (`channel_types="im"`) with the same date, since DMs are the most-dropped surface.
+  Merge and dedupe against the primary results by timestamp. If the supplemental sweep surfaces messages the primary pull missed, note in Metrics that the primary sweep under-returned (so the pattern is visible, not silently patched).
+
 **Auth note:** Slack here is an interactively-authenticated MCP server. If a search returns an auth error, tell the user to run `/mcp` (or reconnect the Slack plugin) and retry — never embed a token.
 
 ## Extraction & classification
@@ -59,6 +66,11 @@ Read each sent message (with its thread context) and classify it. **Drop noise**
 - **`[decision]`** — a call the user made or communicated that others now rely on.
 
 For each kept item record: the tag, a one-line summary, the channel/DM it was sent in, and (if present) the named recipient and any date. Phrase summaries in the user's voice as record-keeping, not as quotes — synthesize, don't paste raw message text verbatim where avoidable.
+
+**Never drop recruitment / participant-ops deliveries — they are no-git and un-recoverable later.** Most deliverables have a git/deliverables-folder trail the weekly rollup can lean on; recruitment and participant coordination do not. If the daily misses them, the evidence is gone. So treat these as **must-capture**, even when they arrive as a short 1:1 DM that would otherwise look like logistics:
+- **Fulfillment signals = a `[deliverable]`** (the recruitment work landed): "X/Y booked", "list pulled", "invites/emails sent", "screener live", "study #NNNNN set up", "reached out to <participants>", "recruited <n>".
+- **A fulfillment message that satisfies a prior promise is also a commitment-closer** — say so explicitly (e.g. "closes the Mon reachout commitment") so the weekly rollup can match it to the open commitment instead of aging it into a false "overdue." A recruitment/participant delivery leaves no artifact for the weekly reconciliation to find, so if the daily doesn't note the closure, nothing else will.
+- These are almost always the Own-Research-Ops workstream — tag per `taxonomy.local.md`, don't let their brevity push them to off-plan.
 
 ### Redact performance-plan / checkpoint comms
 
