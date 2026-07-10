@@ -221,7 +221,7 @@ If a metrics generator script exists (e.g. `~/dev/eow-summaries/gen-metrics.py`)
    - Reminder: "Draft — edit before sharing."
 
 2. **Self-schedule next week's run** (works around the 7-day cron auto-expiration):
-   - Use `CronCreate` with `recurring: false`, `durable: true`, prompt `"Friday EOW summary — invoke the eow-summary skill."`, and a cron expression pinned to next Friday at 8:57am local (e.g. `"57 8 <next-fri-dom> <next-fri-month> *"`).
+   - Use `CronCreate` with `recurring: false`, `durable: true`, prompt `"Friday EOW summary — invoke the eow-summary skill."`, and a cron expression pinned to next Friday at 11:30am local / Amsterdam (e.g. `"30 11 <next-fri-dom> <next-fri-month> *"`).
    - Compute next Friday's date with `date -v+Fri -v+1w +'%d %m'` (zsh on macOS) and substitute the day-of-month and month.
    - Tell the user when the next run is scheduled.
 
