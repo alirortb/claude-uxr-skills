@@ -1,6 +1,6 @@
 ---
 name: eow-summary
-description: Generate end-of-week summary by scanning Claude Code transcripts, ~/dev/* git activity, ~/dev/deliverables/ entries, and project memory across the current week's weekdays. Use when user invokes "/eow-summary", asks "what did I ship this week", "draft my weekly digest", "summarize this week's work", or when the Friday cron triggers it. Produces a single draft markdown file with three layered sections — personal log, team digest, AI Design Guild candidates — for the user to edit before sharing.
+description: Generate end-of-week summary by scanning Claude Code transcripts, ~/dev/* git activity, ~/dev/deliverables/ entries, and project memory across the current week's weekdays. Use when user invokes "/eow-summary", asks "what did I ship this week", "draft my weekly digest", "summarize this week's work", or when the Friday cron triggers it. Produces a single draft markdown file with three layered sections — personal log, team digest, AI Design Guild candidates — for the user to edit before sharing, plus a lean redacted-by-default CARRY_<date>.md companion for reading on a phone or resuming in another session/device.
 ---
 
 # EOW Summary
@@ -212,10 +212,57 @@ If a metrics generator script exists (e.g. `~/dev/eow-summaries/gen-metrics.py`)
 - During the rollup you already re-scan git and re-assess commitment closures — **write those updated figures into the sidecar** (shipped numbers + any status changes) *before* running the script, so the JSON reflects this week, not the seed. New commitments default to `open` and are flagged; resolve them in the sidecar.
 - Both artifacts are local-only.
 
+## Lean carry file (portable, on-the-go)
+
+After the weekly markdown is written, also emit a **lean one-page carry file** — the artifact to read on a phone or paste into a Claude.ai web chat when continuing on another device without Claude Code, the filesystem, or memory. It complements (does not replace) the full summary and the dashboard, and rides the existing Drive backup (`01-EOW captures`) so it's already reachable on mobile.
+
+- Path: `~/dev/eow-summaries/CARRY_YYYY-MM-DD.md` (Friday date, matching the main file).
+- **Overwrite on re-run** — unlike the main summary (which appends), the carry file is a derived snapshot that should always reflect the latest state and stay lean. Regenerate it whole each run.
+- **Keep it to ~1 page.** Only what carries forward — not the exhaustive personal log. If it doesn't help someone resume on Monday from a phone, leave it out.
+- **Redacted-by-default (public-safe).** This is the one EOW artifact designed to leave the machine, so it must be safe to paste anywhere:
+  - Reference any personal-plan workstreams **by slug only** — never the plan's substance, criteria, or manager-feedback (per `feedback_public_artifacts_no_private_info`).
+  - Carry the `[private — checkpoint comms]` collapse forward verbatim — never expand those items here.
+  - Omit the plan-relative metrics interpretation. A bare coverage line is fine; "thin against criteria X" is not.
+  - When in doubt, drop it — the full local-only summary already holds the complete record.
+
+### Carry file template
+
+````markdown
+# Carry — week of <Mon date>–<Fri date> YYYY
+
+_Lean handoff. Read on the go, or paste the resume block below into a fresh chat on another device. Regenerated each run; edit before relying on it._
+
+## State of play
+<2–3 lines: where things stand at week's end — the flagship wins + anything mid-flight.>
+
+## Live threads (carry forward)
+- <open commitment / thread — to whom · by when — checkpoint-private items stay collapsed>
+- <blocker + what unblocks it>
+
+## Next move
+<one concrete sentence — specific name/path/number; the first thing to do next session>
+
+---
+
+### Paste-to-resume (for Claude.ai web / another device)
+```
+I'm Anthony Li (Research Operations at Miro), continuing work from last week in a chat without my Claude Code setup (no filesystem, no memory). Here's where I left off — help me pick up from the "next move".
+
+Week of <Mon>–<Fri>: <one-line what the week covered>
+Flagship: <the 1–2 headline wins>
+Open threads: <the live threads above, one line each>
+Next move: <the next-move line>
+
+Ask me for anything you need; don't assume access to my files.
+```
+````
+
+The paste-to-resume block deliberately mirrors the `close-chat` BOOTSTRAP "session covered" shape, pre-filled — so it drops straight into that fuller closeout flow if the user wants it, or stands alone as a quick resume.
+
 ## After writing the file
 
 1. Print to the user:
-   - The output file path + that the living dashboard HTML was refreshed
+   - The output file path + that the living dashboard HTML was refreshed + the `CARRY_<date>.md` path (the lean portable copy)
    - A 3-line summary: # projects touched, # shipped, # Guild candidates — and name the ★ key wins (the flagship few)
    - The metrics headline: coverage by category (flag any at 0), closure rate, open/overdue commitments
    - Reminder: "Draft — edit before sharing."
