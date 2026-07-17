@@ -192,6 +192,20 @@ _If `~/dev/eod-recaps/taxonomy.local.md` is absent or no eod-recap files fell in
 
 These are activity/coverage/follow-through signals, **not impact**. Git + the Deliverables Log remain the outcome evidence; the metrics complement them. Never present a raw count as if it were performance.
 
+## Monthly promotion pass (Tier 1 → Tier 2 — first eow of the month only)
+
+The Deliverables Log (`~/dev/deliverables/`) is the durable **career-evidence** base — it feeds both the turnaround plan and company performance reviews (see its `README.md` → "Tiers & promotion cadence"). It's Tier 2: curated, human-gated. The eod-recaps/eow-summaries are Tier 1: cheap automatic capture. Things ship in Slack (recruitment sends, audience pulls, participant-ops, study launches) that leave **no git trail** and never get a Tier-2 entry — so they evaporate from the evidence base unless deliberately promoted while the numbers are fresh.
+
+**Trigger:** only when this is the **first eow-summary of a calendar month** (i.e. no other `eow-summaries/*.md` exists for the current month). Otherwise skip this section silently.
+
+**When triggered:**
+1. Walk the **last ~4 weeks** of eod-recaps + eow-summaries. Collect every `[deliverable]` that crossed a real ship threshold, especially **no-git** ones (recruitment/participant-ops/sends/study launches).
+2. Cross-check each against `~/dev/deliverables/*.md` — is there already an entry? Label each candidate **"likely new"** or **"possibly overlaps `<file>` — confirm distinct vs. append."** (Overlap is a label for a human call, not an auto-skip — a study *vehicle* vs. its *audience pull* can both be real.)
+3. **Surface the list and offer to draft** — do NOT auto-write. Writing to Tier 2 stays confirmed, per the same gate the daily `eod-recap` uses. On confirmation, draft core-five entries via `TEMPLATE.md`, quantifying impact from the captured numbers (never invent), and add each to the README index.
+4. **Verify authorship/facts before writing** — e.g. a PR you *authored* is not a PR you *reviewed*; a "test email sent" is not a "study launched". Check before promoting (this is the judgment the gate exists to protect).
+
+This is the safety net that makes the durable evidence base actually durable. Keep it a prompt, not an auto-dump — the folder's credibility at review time depends on everything in it being deliberate and true.
+
 ## Regenerate the living dashboard (multi-source HTML)
 
 After the weekly markdown is written, refresh the **living operating dashboard** — a single, stable, overwritten HTML file that always reflects the latest cumulative picture, so it can be printed at any checkpoint without a one-off build.

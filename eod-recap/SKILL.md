@@ -141,6 +141,8 @@ Instead, after writing the daily recap:
 - If any `[deliverable]` item looks like it crossed a real ship threshold, list those as **"Deliverables-Log candidates"** in the closing summary, each carrying its dedup label.
 - Offer: "Want me to draft a core-five Deliverables Log entry for any of these?" — and only write to `~/dev/deliverables/` if the user says yes, using the format in `~/dev/deliverables/README.md`.
 
+**Keep the daily flag lightweight — the batch safety net lives elsewhere.** You don't have to push hard on every borderline item here: the **monthly promotion pass** in `/eow-summary` (first eow-summary of each month) sweeps the last ~4 weeks of recaps and re-offers any ship-threshold deliverable that never got promoted, so nothing is lost by deferring a marginal call. Surface the clear ones daily; let the monthly pass catch the rest. (Same human-confirmed T1→T2 gate either way — see `~/dev/deliverables/README.md` → "Tiers & promotion cadence".)
+
 ## After writing the file
 
 Print to the user:
