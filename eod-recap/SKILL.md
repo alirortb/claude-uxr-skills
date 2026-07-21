@@ -1,6 +1,6 @@
 ---
 name: eod-recap
-description: Generate an end-of-day recap of action items, deliverables, and commitments from the Slack messages you SENT today. Use when user invokes "/eod-recap", asks "what did I commit to today", "recap my Slack", "what action items did I send", or at end of day. Searches Slack for your own sent messages, extracts the substantive items, and writes a dated daily log to ~/dev/eod-recaps/. Flags deliverable-worthy items and offers to draft a proper Deliverables Log entry. Daily sibling of eow-summary, which rolls these up weekly.
+description: Generate an end-of-day recap of action items, deliverables, and commitments from the Slack messages you SENT today. Use when user invokes "/eod-recap", asks "what did I commit to today", "recap my Slack", "what action items did I send", or at end of day. Searches Slack for your own sent messages, extracts the substantive items, and writes a dated daily log to ~/dev/eod-recaps/. Flags deliverable-worthy items and offers to draft a proper Deliverables Log entry, plus an optional ReOps-tracker batch to paste into the tracker chat. Daily sibling of eow-summary, which rolls these up weekly.
 ---
 
 # EOD Recap
@@ -143,13 +143,75 @@ Instead, after writing the daily recap:
 
 **Keep the daily flag lightweight — the batch safety net lives elsewhere.** You don't have to push hard on every borderline item here: the **monthly promotion pass** in `/eow-summary` (first eow-summary of each month) sweeps the last ~4 weeks of recaps and re-offers any ship-threshold deliverable that never got promoted, so nothing is lost by deferring a marginal call. Surface the clear ones daily; let the monthly pass catch the rest. (Same human-confirmed T1→T2 gate either way — see `~/dev/deliverables/README.md` → "Tiers & promotion cadence".)
 
+## Feeding the ReOps EOD/EOW Tracker (offer a batch, don't write)
+
+The **ReOps EOD/EOW Tracker** is a chat-driven task board that lives on a Miro table (updated from a separate Claude.ai web Project via the Miro MCP — not from here). Because this recap has *already* classified and categorized the day's items, it can re-project them into that tracker's row schema for free — no new judgment, just a field remap. This makes the recap the **candidate generator** for the tracker; the tracker chat stays the authoritative write surface and the confirmation/dedup gate. **Recap proposes, tracker disposes** — so this never becomes a second source of truth.
+
+This is an **offer, not an auto-write** (same posture as the Deliverables-Log flag above). After the recap is written, if there are any tracker-worthy items, offer: "Want a tracker batch to paste into the ReOps tracker chat?" Only render the block if the user says yes (or the invocation asked for one).
+
+### What becomes a row
+
+Re-project each kept item — do **not** re-derive anything, just remap the tags:
+
+| Recap signal | → tracker `Status` / `Category` |
+|---|---|
+| `[deliverable]` | Done / Win |
+| open `[action]` or `[commitment]` | Active / In Progress |
+| any item whose note says waiting-on / stuck / blocked | Blocked / Blocker |
+| `[decision]` | skip — unless it creates an open follow-up task, then treat as the `[action]` it implies |
+
+Field rules (they mirror the tracker's own ingest rules — don't guess):
+- **Task** ← the item's one-line summary.
+- **Priority** ← blank unless the item carried genuine urgency/deadline language. Don't guess.
+- **Initiative** ← keyword-map to one of the tracker's fixed values below; **blank if no clear match** (flag those — see filtering). Don't guess.
+- **Due Date** ← only if the item carried an explicit date.
+- **Owner** ← leave blank (the tracker defaults it to Anthony). If the item names *someone else* as responsible, don't set Owner — put "owner: <name>?" in Notes so the tracker chat can ask for their Miro ID rather than mis-assign.
+- **Notes** ← one short sentence of context; for a blocker, what's needed to unblock (if unknown, say "unclear — needs follow-up", don't invent).
+
+### Initiative keyword map (tracker schema — keep in sync with the tracker handover doc)
+
+These are the tracker's fixed `Initiative` values, *not* the `taxonomy.local.md` W-categories — a different, external axis. Match on the item's named initiative:
+
+- **FeedForward** ← FeedForward, FFR, feedforward
+- **Auto-Rewards** ← rewards, auto-rewards, Tremendous, reward batch
+- **MfD** ← MfD, Miro for Discovery
+- **CAPM** ← CAPM, practice quiz, PM course/foundations
+- **Vendor-Procurement** ← vendor, procurement, ZIP, P-card, Sprig, SOC 2, pentest
+- *(no clear match)* → leave `Initiative` **blank** and list the item under a "no clear initiative — leave blank, not Other" sub-list. **Don't set `Other`:** the tracker treats Initiative=Other as *non-ReOps* and excludes it from summaries, but study-specific recruitment/guide work is real ReOps that just has no named-initiative bucket — blank keeps it in scope.
+
+### Filtering — what never enters the batch
+
+- **`Meta` / `[private — checkpoint comms]` items — never.** These go to a shared board; the redaction carries forward absolutely — never expand or include them.
+- **`Off-plan` items** — excluded (personal logistics, pure social).
+- **Don't dedup — but flag likely updates.** Emit all qualifying candidates; the recap can't see the board, so it must not drop anything. But the tracker only matches on **Task title** (its section 5), so a *reworded* update to ongoing work slips past its dedup and lands as a duplicate — e.g. "Sprig procurement — vendor POC follow-up" vs an existing "#11823: Sprig" row (same thread, different title). When an item reads like an update to an in-flight thread (a named vendor, study, or request number likely already tracked), add it to a short "likely updates an existing row — reconcile by meaning, not title" list above the table, so the paste prompts the tracker chat to update rather than insert. Same spirit as the Deliverables-Log overlap label — a flag for a human call, not a silent merge.
+
+### Output — one clean paste block
+
+Render one fenced, paste-ready block: a short reconciliation preamble (only if any items were flagged as likely updates or lack an Initiative), then the schema table. Keep everything inside the one fence so it's a single copy:
+
+```
+Here's a batch to add to the tracker.
+
+[only if flagged] Before writing, reconcile these against existing rows by meaning — the tracker matches on title only:
+- "<item>" likely updates the existing "<thread>" row — update it, don't insert.
+
+[only if any] Leave Initiative BLANK (not Other) on: <task>, <task>.
+
+| Task | Status | Category | Priority | Initiative | Due Date | Notes |
+|---|---|---|---|---|---|---|
+| <summary> | <Status> | <Category> | | <Initiative or blank> | | <one-line context> |
+```
+
+Omit either preamble line when it doesn't apply — don't print empty scaffolding.
+
 ## After writing the file
 
 Print to the user:
 1. The output file path.
 2. The Metrics snapshot: category coverage, deliverables shipped, commitments made, messages scanned · items kept · channels touched. Call out any workstream sitting at 0 — that imbalance is the signal worth seeing.
 3. The list of any Deliverables-Log candidates (each tagged likely-new vs. possibly-already-logged), with the offer to draft proper entries.
-4. Reminder: "Draft — edit before relying on it."
+4. If there are tracker-worthy items, the offer: "Want a tracker batch to paste into the ReOps tracker chat?" (render only on yes — see "Feeding the ReOps EOD/EOW Tracker").
+5. Reminder: "Draft — edit before relying on it."
 
 ## Rules
 
