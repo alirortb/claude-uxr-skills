@@ -177,7 +177,8 @@ These are the tracker's fixed `Initiative` values, *not* the `taxonomy.local.md`
 - **MfD** ← MfD, Miro for Discovery
 - **CAPM** ← CAPM, practice quiz, PM course/foundations
 - **Vendor-Procurement** ← vendor, procurement, ZIP, P-card, Sprig, SOC 2, pentest
-- *(no clear match)* → leave `Initiative` **blank** and list the item under a "no clear initiative — leave blank, not Other" sub-list. **Don't set `Other`:** the tracker treats Initiative=Other as *non-ReOps* and excludes it from summaries, but study-specific recruitment/guide work is real ReOps that just has no named-initiative bucket — blank keeps it in scope.
+- **Research Support** ← the catch-all for work that *supports research* but fits no named program: study/research creation & setup, recruitment emails/sends & audience pulls, repo building, participant ops, interview-guide/screener work. Most unlabeled ReOps items land here — it is **in scope** for summaries.
+- *(genuinely non-ReOps)* → `Other`. The tracker excludes Initiative=Other from summaries, so reserve it for work that truly isn't ReOps. **Don't** use Other for research-support work (that's Research Support). Leave blank only if truly unclassifiable.
 
 ### Filtering — what never enters the batch
 
@@ -195,14 +196,12 @@ Here's a batch to add to the tracker.
 [only if flagged] Before writing, reconcile these against existing rows by meaning — the tracker matches on title only:
 - "<item>" likely updates the existing "<thread>" row — update it, don't insert.
 
-[only if any] Leave Initiative BLANK (not Other) on: <task>, <task>.
-
 | Task | Status | Category | Priority | Initiative | Due Date | Notes |
 |---|---|---|---|---|---|---|
-| <summary> | <Status> | <Category> | | <Initiative or blank> | | <one-line context> |
+| <summary> | <Status> | <Category> | | <Initiative — a named program, or Research Support> | | <one-line context> |
 ```
 
-Omit either preamble line when it doesn't apply — don't print empty scaffolding.
+Omit the preamble line when nothing's flagged — don't print empty scaffolding.
 
 ## After writing the file
 
