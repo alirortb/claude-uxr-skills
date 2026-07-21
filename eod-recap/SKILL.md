@@ -177,27 +177,32 @@ These are the tracker's fixed `Initiative` values, *not* the `taxonomy.local.md`
 - **MfD** ← MfD, Miro for Discovery
 - **CAPM** ← CAPM, practice quiz, PM course/foundations
 - **Vendor-Procurement** ← vendor, procurement, ZIP, P-card, Sprig, SOC 2, pentest
-- *(no clear match)* → leave `Initiative` blank and list the item under a "no clear initiative — you classify at paste" sub-list, so the tracker chat / Anthony sets it (Other or a name). Don't auto-set `Other`.
+- *(no clear match)* → leave `Initiative` **blank** and list the item under a "no clear initiative — leave blank, not Other" sub-list. **Don't set `Other`:** the tracker treats Initiative=Other as *non-ReOps* and excludes it from summaries, but study-specific recruitment/guide work is real ReOps that just has no named-initiative bucket — blank keeps it in scope.
 
 ### Filtering — what never enters the batch
 
 - **`Meta` / `[private — checkpoint comms]` items — never.** These go to a shared board; the redaction carries forward absolutely — never expand or include them.
 - **`Off-plan` items** — excluded (personal logistics, pure social).
-- **Don't dedup here.** Emit all qualifying candidates; the tracker chat checks each Task title against existing rows (its section 5) and merges. Deduping in the recap would hide items the tracker needs to see.
+- **Don't dedup — but flag likely updates.** Emit all qualifying candidates; the recap can't see the board, so it must not drop anything. But the tracker only matches on **Task title** (its section 5), so a *reworded* update to ongoing work slips past its dedup and lands as a duplicate — e.g. "Sprig procurement — vendor POC follow-up" vs an existing "#11823: Sprig" row (same thread, different title). When an item reads like an update to an in-flight thread (a named vendor, study, or request number likely already tracked), add it to a short "likely updates an existing row — reconcile by meaning, not title" list above the table, so the paste prompts the tracker chat to update rather than insert. Same spirit as the Deliverables-Log overlap label — a flag for a human call, not a silent merge.
 
 ### Output — one clean paste block
 
-Render exactly one fenced markdown table in the tracker's ingest schema, labeled for paste. Nothing else in the block:
+Render one fenced, paste-ready block: a short reconciliation preamble (only if any items were flagged as likely updates or lack an Initiative), then the schema table. Keep everything inside the one fence so it's a single copy:
 
 ```
-Batch for the ReOps tracker chat — paste with "here's a batch to add to the tracker:"
+Here's a batch to add to the tracker.
+
+[only if flagged] Before writing, reconcile these against existing rows by meaning — the tracker matches on title only:
+- "<item>" likely updates the existing "<thread>" row — update it, don't insert.
+
+[only if any] Leave Initiative BLANK (not Other) on: <task>, <task>.
 
 | Task | Status | Category | Priority | Initiative | Due Date | Notes |
 |---|---|---|---|---|---|---|
 | <summary> | <Status> | <Category> | | <Initiative or blank> | | <one-line context> |
 ```
 
-If any items had no Initiative match, list them under the table as "No clear initiative — classify at paste: <task>, <task>" so the gap is visible, not silently dropped.
+Omit either preamble line when it doesn't apply — don't print empty scaffolding.
 
 ## After writing the file
 
