@@ -155,7 +155,7 @@ Re-project each kept item — do **not** re-derive anything, just remap the tags
 
 | Recap signal | → tracker `Status` / `Category` |
 |---|---|
-| `[deliverable]` | Done / Win |
+| `[deliverable]` | Done / Win — **except code-review items, which never enter the batch (see filtering)** |
 | open `[action]` or `[commitment]` | Active / In Progress |
 | any item whose note says waiting-on / stuck / blocked | Blocked / Blocker |
 | `[decision]` | skip — unless it creates an open follow-up task, then treat as the `[action]` it implies |
@@ -184,6 +184,8 @@ These are the tracker's fixed `Initiative` values, *not* the `taxonomy.local.md`
 
 - **`Meta` / `[private — checkpoint comms]` items — never.** These go to a shared board; the redaction carries forward absolutely — never expand or include them.
 - **`Off-plan` items** — excluded (personal logistics, pure social).
+- **Code-review and repo mechanics — never.** PR reviews are genuine deliverables and they *stay in the recap*, in the EOW digest, and remain Deliverables-Log candidates — but they aren't work the user tracks personally. The PR itself is already the tracker, and per-PR rows bury the handful of items that actually need a decision. Exclude any item whose substance is a review pass, a merge, or repo plumbing: "reviewed/approved PR #N", driving a PR green, CI/check status, VERSION-slot collisions, branch retargeting or cleanup, CHANGELOG/LORE entries, commit SHAs. Never put a PR number in a `Task` title.
+  - **Carve-out — when the blocker is a person, not the code.** If the item leaves a *named human* owing a decision, an access, or a sign-off — a security disposition handed to someone, a repo-access request, a budget or terms-of-use question, a broken environment with no owner — that IS a row. Keep it, but restate it in outcome terms and strip the PR/commit/version detail. E.g. "MfD PR #398 driven green; Oplane item argued as accepted risk and handed to Deniz" → `MfD dark-notification settings — security sign-off · Blocked · Blocker · owner: Deniz?`.
 - **Don't dedup — but flag likely updates.** Emit all qualifying candidates; the recap can't see the board, so it must not drop anything. But the tracker only matches on **Task title** (its section 5), so a *reworded* update to ongoing work slips past its dedup and lands as a duplicate — e.g. "Sprig procurement — vendor POC follow-up" vs an existing "#11823: Sprig" row (same thread, different title). When an item reads like an update to an in-flight thread (a named vendor, study, or request number likely already tracked), add it to a short "likely updates an existing row — reconcile by meaning, not title" list above the table, so the paste prompts the tracker chat to update rather than insert. Same spirit as the Deliverables-Log overlap label — a flag for a human call, not a silent merge.
 
 ### Output — one clean paste block
