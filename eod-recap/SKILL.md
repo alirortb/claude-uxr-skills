@@ -35,24 +35,48 @@ TODAY=$(date +%Y-%m-%d)
 
 ## How to pull the messages
 
-Use `mcp__slack__slack_search_public_and_private` with the `from:` + `on:` modifiers:
+Use `mcp__plugin_slack_slack__slack_search_public_and_private` with the `from:` + `on:` modifiers.
+
+**Run the primary pull as two passes split by `channel_types` — never one combined search.** A single combined sweep silently under-returns: on 2026-07-27 it returned 14 of 31 actual sent messages, dropping both a PR-green/Oplane message and a FeedForward invite send. Splitting the surfaces fixed it (2026-07-28: 43 + 21 across the two passes). Run both, every time:
 
 ```
-query: "from:<@YOUR_ID> on:YYYY-MM-DD"
-sort:  "timestamp"
-sort_dir: "asc"
+pass 1 — channels:  query:         "from:<@YOUR_ID> on:YYYY-MM-DD"
+                    channel_types: "public_channel,private_channel,mpim"
+
+pass 2 — DMs:       query:         "from:<@YOUR_ID> on:YYYY-MM-DD"
+                    channel_types: "im"
+
+both:               sort: "timestamp"   sort_dir: "asc"
 ```
 
-- Page through results with the returned `cursor` until exhausted — do not stop at the first 20. The user may have sent many messages.
+- **Page each pass to exhaustion** with the returned `cursor`. `limit` caps at 20 per page, and a day with 40–90 sent messages is normal here — a single-page result on a working day means you stopped early, not that the day was quiet.
+- Merge and dedupe the two passes by timestamp. The DM pass is usually a subset of the channel pass; when it *isn't*, that is the under-return this split exists to catch — say so in the sweep note.
 - `include_context: true` is useful: the surrounding thread tells you *what* a commitment was in response to, which sharpens the extracted item.
-- If `0 results`, try a semantic phrasing or widen to `after:<yesterday>` to confirm the filter is right before reporting an empty day.
+- If a pass returns `0 results`, widen to `after:<yesterday>` to confirm the filter is right before reporting an empty surface.
+- **Don't substitute a wide `after:`/`before:` range for per-day `on:` passes.** Range queries silently cap out: a 2026-07-20 → 2026-08-05 DM pass returned 57 results over 3 pages and reported "End of results" while sitting 8 days short of the range — messages from the missing days were provably there (they surfaced in narrower searches). A range pass is fine for a *narrow* keyword sweep; it is not a substitute for the dated primary passes.
 
-**Completeness self-check (the search under-pulls — catch it).** The `from:` sweep sometimes returns far fewer messages than were actually sent, especially **1:1 DMs**, which have silently dropped whole deliveries (a real miss: a "15/15 booked" recruitment delivery in a DM never made it into a recap that logged only 3 messages, then read as an overdue commitment a week later). Guard against it:
-- After paging to exhaustion, sanity-check the count. On any normal working day a single scanned message is a red flag; **fewer than ~8 kept-or-scanned on a day the user clearly worked is "probably incomplete," not "a quiet day."** When it looks thin, re-run the sweep with a semantic phrasing and with `sort:timestamp sort_dir:asc`, and run the supplemental sweep below before concluding.
-- **Supplemental targeted sweep — always run it, don't rely on the `from:` pull alone.** Recruitment/participant-ops deliveries are high-value, live in DMs and participant-coordination channels, and leave **no git footprint** (so the weekly rollup can't recover them if the daily misses them). After the primary pull, run a few extra `from:<@self> on:YYYY-MM-DD` searches seeded with fulfillment keywords to force those threads to surface:
-  - `from:<@self> on:DATE (booked OR invites OR "reached out" OR reachout OR screener OR participants OR recruited OR "pulled" OR study)`
-  - and a bare DM-only pass (`channel_types="im"`) with the same date, since DMs are the most-dropped surface.
-  Merge and dedupe against the primary results by timestamp. If the supplemental sweep surfaces messages the primary pull missed, note in Metrics that the primary sweep under-returned (so the pattern is visible, not silently patched).
+### Fulfillment-keyword sweep — one search per keyword
+
+⚠️ **Slack search has no boolean `OR`.** Space-separated terms are ANDed, and parentheses are not operators — so a single `(booked OR invites OR …)` query ANDs every term together and reliably returns **0 results**, which reads as "no recruitment activity" when it actually means "the query can't match anything." This is not hypothetical: the sweep shipped in that form and returned 0 on **every run from 2026-07-21 through 2026-08-04**, so the safety net spent two weeks reporting a clean bill of health while never running. Never bundle the keywords into one search.
+
+Run them as **separate single-keyword passes**, each `from:<@YOUR_ID> on:YYYY-MM-DD` plus one term, then merge:
+
+```
+booked · invites · screener · participants · recruited · reachout · study
+"reached out" · "list pulled"          (quoted phrases ARE supported)
+```
+
+- Pick the handful that fit the day's likely work rather than firing all of them; a multi-word phrase needs `"quotes"` to stay a phrase.
+- This leg exists because recruitment/participant-ops deliveries live in DMs, are often one short line, and leave **no git footprint** — so the weekly rollup cannot recover what the daily drops. (A real miss: a "15/15 booked" recruitment delivery in a DM never made it into a recap that logged only 3 messages, then read as an overdue commitment a week later.)
+- Merge and dedupe against the primary passes by timestamp.
+
+### Completeness self-check
+
+After all passes, sanity-check the count. On a day the user clearly worked, **fewer than ~8 kept-or-scanned is "probably incomplete," not "a quiet day"** — re-run with a semantic phrasing before concluding.
+
+**A `0 results` on a keyword pass is only informative if the query was valid.** If every supplemental pass returns 0, suspect the query shape before concluding the day had no recruitment work.
+
+Record the accounting in the `Sweep note` metrics line **every run, pass or fail**: per-pass counts, and explicitly whether any pass recovered a message the others missed. For any pass that returned 0, state which it was — a genuine absence, or a query that couldn't have matched. Silent zeros are how this check broke.
 
 **Auth note:** Slack here is an interactively-authenticated MCP server. If a search returns an auth error, tell the user to run `/mcp` (or reconnect the Slack plugin) and retry — never embed a token.
 
@@ -128,6 +152,7 @@ _Draft generated <ISO timestamp> from Slack messages sent by the user today. Edi
 - Deliverables shipped today: <n>
 - Commitments made today: <n> (with a due date: <n>)
 - Messages scanned: <n> · Items kept: <n> · Channels/DMs touched: <list>
+- Sweep note: channel pass <n> (<p> pages) · DM pass <n> (<p> pages) · keyword passes <n> — <whether any pass recovered a message the others missed; for any 0, whether it's a genuine absence or a query that couldn't match>
 ```
 
 Omit any section with no items rather than printing an empty heading. The `## Metrics` block always renders (it's the numerical layer). Keep the daily metrics to *today's snapshot* — closure rate, aging, and shipped-vs-said are computed at the weekly rollup (`eow-summary`), which reads across the full eod-recap history.
@@ -207,7 +232,7 @@ Omit the preamble line when nothing's flagged — don't print empty scaffolding.
 
 Print to the user:
 1. The output file path.
-2. The Metrics snapshot: category coverage, deliverables shipped, commitments made, messages scanned · items kept · channels touched. Call out any workstream sitting at 0 — that imbalance is the signal worth seeing.
+2. The Metrics snapshot: category coverage, deliverables shipped, commitments made, messages scanned · items kept · channels touched. Call out any workstream sitting at 0 — that imbalance is the signal worth seeing. Surface the sweep note too if any pass under-returned or returned an unexplained 0 — a coverage gap the user can't see is worse than a thin day.
 3. The list of any Deliverables-Log candidates (each tagged likely-new vs. possibly-already-logged), with the offer to draft proper entries.
 4. If there are tracker-worthy items, the offer: "Want a tracker batch to paste into the ReOps tracker chat?" (render only on yes — see "Feeding the ReOps EOD/EOW Tracker").
 5. Reminder: "Draft — edit before relying on it."
@@ -215,6 +240,7 @@ Print to the user:
 ## Rules
 
 - **Sent messages only.** `from:<@self>` on every search (resolved at runtime — see Scope). This is the user's own record, not an inbox.
+- **Two primary passes, never one.** Split by `channel_types` (channels, then `im`) and page each to exhaustion. No boolean operators in any Slack query — one keyword per search.
 - **Read-only.** Never send, edit, or react to Slack messages. Never modify the Deliverables Log without explicit confirmation.
 - **Drop noise.** Greetings, thanks, +1s, pure logistics — out. Keep commitments and outputs.
 - **Synthesize, don't dump.** Don't paste raw message bodies wholesale; summarize in the user's voice.
