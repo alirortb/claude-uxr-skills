@@ -198,10 +198,10 @@ Field rules (they mirror the tracker's own ingest rules — don't guess):
 These are the tracker's fixed `Initiative` values, *not* the `taxonomy.local.md` W-categories — a different, external axis. Match on the item's named initiative:
 
 - **FeedForward** ← FeedForward, FFR, feedforward
-- **Auto-Rewards** ← rewards, auto-rewards, Tremendous, reward batch
+- **Auto-Rewards** ← rewards, auto-rewards, reward batch, the reward-disbursement vendor's name
 - **MfD** ← MfD, Miro for Discovery
 - **CAPM** ← CAPM, practice quiz, PM course/foundations
-- **Vendor-Procurement** ← vendor, procurement, ZIP, P-card, Sprig, SOC 2, pentest
+- **Vendor-Procurement** ← vendor, procurement, ZIP, P-card, SOC 2, pentest, any named tool under evaluation
 - **Research Support** ← the catch-all for work that *supports research* but fits no named program: study/research creation & setup, recruitment emails/sends & audience pulls, repo building, participant ops, interview-guide/screener work. Most unlabeled ReOps items land here — it is **in scope** for summaries.
 - *(genuinely non-ReOps)* → `Other`. The tracker excludes Initiative=Other from summaries, so reserve it for work that truly isn't ReOps. **Don't** use Other for research-support work (that's Research Support). Leave blank only if truly unclassifiable.
 
@@ -209,7 +209,7 @@ These are the tracker's fixed `Initiative` values, *not* the `taxonomy.local.md`
 
 - **`Meta` / `[private — checkpoint comms]` items — never.** These go to a shared board; the redaction carries forward absolutely — never expand or include them.
 - **`Off-plan` items** — excluded (personal logistics, pure social).
-- **Don't dedup — but flag likely updates.** Emit all qualifying candidates; the recap can't see the board, so it must not drop anything. But the tracker only matches on **Task title** (its section 5), so a *reworded* update to ongoing work slips past its dedup and lands as a duplicate — e.g. "Sprig procurement — vendor POC follow-up" vs an existing "#11823: Sprig" row (same thread, different title). When an item reads like an update to an in-flight thread (a named vendor, study, or request number likely already tracked), add it to a short "likely updates an existing row — reconcile by meaning, not title" list above the table, so the paste prompts the tracker chat to update rather than insert. Same spirit as the Deliverables-Log overlap label — a flag for a human call, not a silent merge.
+- **Don't dedup — but flag likely updates.** Emit all qualifying candidates; the recap can't see the board, so it must not drop anything. But the tracker only matches on **Task title** (its section 5), so a *reworded* update to ongoing work slips past its dedup and lands as a duplicate — e.g. "<tool> procurement — vendor POC follow-up" vs an existing "#<request-no>: <tool>" row (same thread, different title). When an item reads like an update to an in-flight thread (a named vendor, study, or request number likely already tracked), add it to a short "likely updates an existing row — reconcile by meaning, not title" list above the table, so the paste prompts the tracker chat to update rather than insert. Same spirit as the Deliverables-Log overlap label — a flag for a human call, not a silent merge.
 
 ### Output — one clean paste block
 

@@ -194,7 +194,7 @@ These are activity/coverage/follow-through signals, **not impact**. Git + the De
 
 ## Monthly promotion pass (Tier 1 → Tier 2 — first eow of the month only)
 
-The Deliverables Log (`~/dev/deliverables/`) is the durable **career-evidence** base — it feeds both the turnaround plan and company performance reviews (see its `README.md` → "Tiers & promotion cadence"). It's Tier 2: curated, human-gated. The eod-recaps/eow-summaries are Tier 1: cheap automatic capture. Things ship in Slack (recruitment sends, audience pulls, participant-ops, study launches) that leave **no git trail** and never get a Tier-2 entry — so they evaporate from the evidence base unless deliberately promoted while the numbers are fresh.
+The Deliverables Log (`~/dev/deliverables/`) is the durable **evidence base** for shipped work — it feeds the downstream reporting that reads from it (see its `README.md` → "Tiers & promotion cadence"). It's Tier 2: curated, human-gated. The eod-recaps/eow-summaries are Tier 1: cheap automatic capture. Things ship in Slack (recruitment sends, audience pulls, participant-ops, study launches) that leave **no git trail** and never get a Tier-2 entry — so they evaporate from the evidence base unless deliberately promoted while the numbers are fresh.
 
 **Trigger:** only when this is the **first eow-summary of a calendar month** (i.e. no other `eow-summaries/*.md` exists for the current month). Otherwise skip this section silently.
 
