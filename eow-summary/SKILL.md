@@ -1,6 +1,6 @@
 ---
 name: eow-summary
-description: Generate end-of-week summary by scanning Claude Code transcripts, ~/dev/* git activity, ~/dev/deliverables/ entries, and project memory across the current week's weekdays. Use when user invokes "/eow-summary", asks "what did I ship this week", "draft my weekly digest", "summarize this week's work", or when the Friday cron triggers it. Produces a single draft markdown file with three layered sections — personal log, team digest, AI Design Guild candidates — for the user to edit before sharing, plus a lean redacted-by-default CARRY_<date>.md companion for reading on a phone or resuming in another session/device.
+description: Generate end-of-week summary by scanning Claude Code transcripts, git activity across configurable scan roots, ~/dev/deliverables/ entries, and project memory across the current week's weekdays. Use when user invokes "/eow-summary", asks "what did I ship this week", "draft my weekly digest", "summarize this week's work", or when the Friday cron triggers it. Produces a single draft markdown file with three layered sections — personal log, team digest, AI Design Guild candidates — for the user to edit before sharing, plus a lean redacted-by-default CARRY_<date>.md companion for reading on a phone or resuming in another session/device.
 ---
 
 # EOW Summary
@@ -35,17 +35,43 @@ Use ISO timestamps (`YYYY-MM-DD`) when passing to `git log --since`/`--until` an
 
 Run these in parallel where independent.
 
-### 1. Git activity in ~/dev/* (ground truth for shipped work)
+### 1. Git activity (ground truth for shipped work)
 
-For each git repo under `~/dev/*/`:
+**Scan roots are configurable, and `~/dev/*/` alone is not enough.** Repos that live outside `~/dev` are invisible to a bare glob, and a repo you don't scan reads as a week with no commits rather than a gap in measurement — a silent undercount of authored work, in the one source this skill treats as ground truth.
+
+Read the roots from `~/dev/eow-summaries/scan-roots.local` when it exists — one shell glob or path per line, `#` for comments — and fall back to `~/dev/*/` when it doesn't. **Quote any path containing a space in that file**; the loader below honours the quotes, and an unquoted `$HOME/My Repo` word-splits into two non-existent paths and is skipped in silence:
+
+```bash
+shopt -s nullglob
+ROOTS_FILE="$HOME/dev/eow-summaries/scan-roots.local"
+[ -f "$ROOTS_FILE" ] || printf '%s\n' '$HOME/dev/*/' > "$ROOTS_FILE"
+while IFS= read -r line; do
+  case "$line" in ""|\#*) continue;; esac
+  eval "paths=($line)"          # array-eval: expands globs, preserves quoted spaces
+  for d in "${paths[@]}"; do
+    [ -d "$d/.git" ] || continue
+    git -C "$d" log --since="$START" --until="$END 23:59" \
+      --pretty=format:'%H|%h|%ad|%s' --date=short --no-merges --all
+  done
+done < "$ROOTS_FILE"
 ```
-for d in ~/dev/*/; do
-  [ -d "$d/.git" ] || continue
-  git -C "$d" log --since="$START" --until="$END 23:59" \
-    --pretty=format:'%h|%ad|%s' --date=short --no-merges --all
-done
-```
+
+Run it under `bash`, not `sh` — it needs arrays and `nullglob`. **Print the resolved repo count** before using the results; if it is lower than you expect, a quoting or glob problem swallowed a root rather than the week being quiet.
+
 Drop any line whose date falls on Sat/Sun. Group by repo. Note branches active in the window via `git -C "$d" for-each-ref --sort=-committerdate refs/heads/`.
+
+**State the roots you scanned in the summary's git section.** If a known repo is absent from the config, say so rather than reporting a total that quietly excludes it.
+
+#### Counting method — pin it, or successive runs will disagree
+
+Report both a repo-wide and an authored count, and derive both the same way every time:
+
+- **Dedup by full commit hash (`%H`), never by subject.** Subjects repeat across branches after a rebase or cherry-pick; hashes don't.
+- **Union mirrored repos before counting; never sum them.** Where one repo mirrors another, the same commit appears in both with the same hash — summing the per-repo rows double-counts every mirrored commit. Concatenate the hash lists, `sort -u`, then count.
+- **Authored = filter on every git identity the user commits under** (`git log --author=` accepts repeated flags, OR'd). A single-identity filter silently drops work committed under the other one; check `git log --pretty=%an\ <%ae> | sort -u` per repo if unsure.
+- **Print the method alongside the number.** Two defensible methods over the same window can differ by 30%+; a bare count with no stated basis cannot be reconciled against last week's.
+
+A worked check that the numbers are internally consistent: per-repo unioned counts must sum to the all-repo deduped total. If they don't, a mirror is being double-counted somewhere.
 
 ### 2. ~/dev/deliverables/ entries (polish signal)
 
@@ -300,6 +326,7 @@ The paste-to-resume block deliberately mirrors the `close-chat` BOOTSTRAP "sessi
 - **Honest about AI role.** When an automation is pure orchestration, say so (Format A house rule).
 - **Weekday-only.** Drop Sat/Sun activity even if a calendar-week range is passed.
 - **Source weighting.** Git is ground truth for what shipped; transcripts are last-resort context.
+- **Never report a git count without its basis.** Hash-deduped, mirrors unioned, roots named. An unqualified commit count cannot be reconciled against the prior week's and will read as a discrepancy.
 - **Don't paste raw transcript content** — synthesize, don't quote.
 - **Read-only on sources.** Never modify git repos, deliverables files, or memory files.
 - **One file per Friday.** Re-runs append, not overwrite.
