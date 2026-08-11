@@ -1,6 +1,6 @@
 ---
 name: eow-summary
-description: Generate end-of-week summary by scanning Claude Code transcripts, ~/dev/* git activity, ~/dev/deliverables/ entries, and project memory across the current week's weekdays. Use when user invokes "/eow-summary", asks "what did I ship this week", "draft my weekly digest", "summarize this week's work", or when the Friday cron triggers it. Produces a single draft markdown file with three layered sections — personal log, team digest, AI Design Guild candidates — for the user to edit before sharing, plus a lean redacted-by-default CARRY_<date>.md companion for reading on a phone or resuming in another session/device.
+description: Generate end-of-week summary by scanning Claude Code transcripts, git activity across the configured scan roots (~/dev/* plus any workspace outside it), ~/dev/deliverables/ entries, and project memory across the current week's weekdays. Use when user invokes "/eow-summary", asks "what did I ship this week", "draft my weekly digest", "summarize this week's work", or when the Friday cron triggers it. Produces a single draft markdown file with three layered sections — personal log, team digest, AI Design Guild candidates — for the user to edit before sharing, plus a lean redacted-by-default CARRY_<date>.md companion for reading on a phone or resuming in another session/device.
 ---
 
 # EOW Summary
@@ -35,17 +35,35 @@ Use ISO timestamps (`YYYY-MM-DD`) when passing to `git log --since`/`--until` an
 
 Run these in parallel where independent.
 
-### 1. Git activity in ~/dev/* (ground truth for shipped work)
+### 1. Git activity across the scan roots (ground truth for shipped work)
 
-For each git repo under `~/dev/*/`:
+⚠️ **Not every working repo lives under `~/dev`.** This step scanned only `~/dev/*/` until 2026-08-11, which meant any repo outside that glob was **invisible to the weekly** — no commits, no branches, no drift. A real miss: `~/UXR Recruitment` (the workspace producing the recruitment pulls) sat outside the glob, so a pushed-but-un-PR'd branch there went unreported. It surfaced only because a hand-written "no PR yet" note in a deliverables entry happened to be re-read a day later.
+
+Scan **every root in the list**, not just `~/dev`:
+
 ```
-for d in ~/dev/*/; do
+SCAN_ROOTS=(~/dev/*/ ~/"UXR Recruitment")   # add any workspace living outside ~/dev
+
+for d in "${SCAN_ROOTS[@]}"; do
   [ -d "$d/.git" ] || continue
   git -C "$d" log --since="$START" --until="$END 23:59" \
     --pretty=format:'%h|%ad|%s' --date=short --no-merges --all
 done
 ```
+
 Drop any line whose date falls on Sat/Sun. Group by repo. Note branches active in the window via `git -C "$d" for-each-ref --sort=-committerdate refs/heads/`.
+
+**Also report branch/PR drift per repo**, not just commits — an un-merged branch is work that shipped without landing, and it is exactly what a `--since` commit scan misses once the commit date falls out of the window:
+
+```
+git -C "$d" for-each-ref --format='%(refname:short)' refs/heads/ | while read b; do
+  [ "$b" = main ] || [ "$b" = master ] && continue
+  ahead=$(git -C "$d" rev-list --count main.."$b" 2>/dev/null)
+  [ "${ahead:-0}" -gt 0 ] && echo "$d $b ahead:$ahead"
+done
+```
+
+Flag any branch that is **ahead of `main` with no open PR** — `gh pr list --head "$b"` returns empty. Report it as an open thread, not as shipped work.
 
 ### 2. ~/dev/deliverables/ entries (polish signal)
 
