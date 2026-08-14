@@ -37,21 +37,37 @@ TODAY=$(date +%Y-%m-%d)
 
 Use `mcp__plugin_slack_slack__slack_search_public_and_private` with the `from:` + `on:` modifiers.
 
-**Run the primary pull as two passes split by `channel_types` — never one combined search.** A single combined sweep silently under-returns: on 2026-07-27 it returned 14 of 31 actual sent messages, dropping both a PR-green/Oplane message and a FeedForward invite send. Splitting the surfaces fixed it (2026-07-28: 43 + 21 across the two passes). Run both, every time:
+**Run the primary pull as FOUR passes — two surfaces × two sort directions. Never fewer.** Two independent truncation defects stack here, and each one alone loses a working day's afternoon:
+
+1. *Surface truncation* — a single combined sweep silently under-returns: on 2026-07-27 it returned 14 of 31 actual sent messages, dropping both a PR-green/Oplane message and a FeedForward invite send. Splitting by `channel_types` fixed it (2026-07-28: 43 + 21).
+2. *Direction truncation* — even a correctly-split single-day pass truncates **and then reports completeness**. On 2026-08-10 the channels pass with `sort_dir: asc` returned 15 results on one page and said *"End of results - No more pages available"* — having stopped dead at 12:26 CEST. The byte-identical query with `sort_dir: desc` returned **36 across 2 pages**. Thirty-three sent messages existed only in the descending pass, including every recruitment fulfillment signal of that day (a study send, its first bookings, a waitlist follow-up, a moderator swap) and two of three PR reviews. The keyword sweep did not catch it — all three keyword passes ran valid and returned only messages the union already had.
+
+Run all four, every time:
 
 ```
-pass 1 — channels:  query:         "from:<@YOUR_ID> on:YYYY-MM-DD"
-                    channel_types: "public_channel,private_channel,mpim"
+pass 1 — channels ↑:  query:         "from:<@YOUR_ID> on:YYYY-MM-DD"
+                      channel_types: "public_channel,private_channel,mpim"
+                      sort_dir:      "asc"
 
-pass 2 — DMs:       query:         "from:<@YOUR_ID> on:YYYY-MM-DD"
-                    channel_types: "im"
+pass 2 — channels ↓:  (same query + channel_types)
+                      sort_dir:      "desc"
 
-both:               sort: "timestamp"   sort_dir: "asc"
+pass 3 — DMs ↑:       query:         "from:<@YOUR_ID> on:YYYY-MM-DD"
+                      channel_types: "im"
+                      sort_dir:      "asc"
+
+pass 4 — DMs ↓:       (same query + channel_types)
+                      sort_dir:      "desc"
+
+all:                  sort: "timestamp"
 ```
 
-- **Page each pass to exhaustion** with the returned `cursor`. `limit` caps at 20 per page, and a day with 40–90 sent messages is normal here — a single-page result on a working day means you stopped early, not that the day was quiet.
-- Merge and dedupe the two passes by timestamp. The DM pass is usually a subset of the channel pass; when it *isn't*, that is the under-return this split exists to catch — say so in the sweep note.
-- `include_context: true` is useful: the surrounding thread tells you *what* a commitment was in response to, which sharpens the extracted item.
+- ⚠️ **`"End of results - No more pages available"` is not evidence of completeness.** It is emitted on truncated single-page results. Never treat it as a stopping condition on its own — only the asc∪desc union is trustworthy.
+- **Page every pass to exhaustion** with the returned `cursor`. `limit` caps at 20 per page, and a day with 40–90 sent messages is normal here — a single-page result on a working day means you stopped early, not that the day was quiet.
+- **Check the union for a time-coverage gap, not just a count.** Sort the merged set by timestamp and confirm it spans the whole working day continuously. The 08-10 failure was invisible in the count (15 is a plausible Monday) and obvious in the clock — nothing after 12:26 on a day with 16:06 sends. If asc and desc don't overlap in the middle, you are still missing the middle: widen with per-channel `in:#channel` passes until they do.
+- **A pass that agrees exactly with its opposite direction is confirmed complete** — on 08-10 the DM passes both returned the same 8, which is what a genuinely complete surface looks like.
+- Merge and dedupe all passes by timestamp. The DM pass is usually a subset of the channel pass; when it *isn't*, that is the under-return this split exists to catch — say so in the sweep note.
+- `include_context: true` is useful twice over: the surrounding thread sharpens the extracted item, **and** quoted `[See result above]` timestamps for your own user ID are a free cross-check on the primary passes — that is how the 08-10 truncation was spotted at all. If context quotes one of your sends that no pass returned, the passes are incomplete.
 - If a pass returns `0 results`, widen to `after:<yesterday>` to confirm the filter is right before reporting an empty surface.
 - **Don't substitute a wide `after:`/`before:` range for per-day `on:` passes.** Range queries silently cap out: a 2026-07-20 → 2026-08-05 DM pass returned 57 results over 3 pages and reported "End of results" while sitting 8 days short of the range — messages from the missing days were provably there (they surfaced in narrower searches). A range pass is fine for a *narrow* keyword sweep; it is not a substitute for the dated primary passes.
 
@@ -152,7 +168,7 @@ _Draft generated <ISO timestamp> from Slack messages sent by the user today. Edi
 - Deliverables shipped today: <n>
 - Commitments made today: <n> (with a due date: <n>)
 - Messages scanned: <n> · Items kept: <n> · Channels/DMs touched: <list>
-- Sweep note: channel pass <n> (<p> pages) · DM pass <n> (<p> pages) · keyword passes <n> — <whether any pass recovered a message the others missed; for any 0, whether it's a genuine absence or a query that couldn't match>
+- Sweep note: channels ↑<n> (<p>p) ↓<n> (<p>p) · DMs ↑<n> (<p>p) ↓<n> (<p>p) · keyword passes <n> · union <n> spanning <first>–<last> — <whether either direction recovered messages the other missed; for any 0, whether it's a genuine absence or a query that couldn't match>
 ```
 
 Omit any section with no items rather than printing an empty heading. The `## Metrics` block always renders (it's the numerical layer). Keep the daily metrics to *today's snapshot* — closure rate, aging, and shipped-vs-said are computed at the weekly rollup (`eow-summary`), which reads across the full eod-recap history.
@@ -242,7 +258,7 @@ Print to the user:
 ## Rules
 
 - **Sent messages only.** `from:<@self>` on every search (resolved at runtime — see Scope). This is the user's own record, not an inbox.
-- **Two primary passes, never one.** Split by `channel_types` (channels, then `im`) and page each to exhaustion. No boolean operators in any Slack query — one keyword per search.
+- **Four primary passes, never fewer.** Two surfaces (channels, then `im`) × two sort directions (`asc`, then `desc`), each paged to exhaustion, merged as a union. `"End of results - No more pages available"` is emitted on truncated results and proves nothing. Verify the union spans the whole working day on the clock, not just that the count looks plausible. No boolean operators in any Slack query — one keyword per search.
 - **Read-only.** Never send, edit, or react to Slack messages. Never modify the Deliverables Log without explicit confirmation.
 - **Drop noise.** Greetings, thanks, +1s, pure logistics — out. Keep commitments and outputs.
 - **Synthesize, don't dump.** Don't paste raw message bodies wholesale; summarize in the user's voice.
