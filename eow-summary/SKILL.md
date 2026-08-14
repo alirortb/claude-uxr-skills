@@ -73,6 +73,20 @@ Report both a repo-wide and an authored count, and derive both the same way ever
 
 A worked check that the numbers are internally consistent: per-repo unioned counts must sum to the all-repo deduped total. If they don't, a mirror is being double-counted somewhere.
 
+#### Branch / PR drift — commits are not the whole picture
+
+**Also report branch/PR drift per repo**, not just commits. An un-merged branch is work that shipped without landing, and it is exactly what a `--since` commit scan misses once the branch's commit dates fall out of the window — the week reads as clean while the work sits unlanded:
+
+```bash
+git -C "$d" for-each-ref --format='%(refname:short)' refs/heads/ | while read -r b; do
+  case "$b" in main|master) continue;; esac
+  ahead=$(git -C "$d" rev-list --count main.."$b" 2>/dev/null)
+  [ "${ahead:-0}" -gt 0 ] && echo "$d $b ahead:$ahead"
+done
+```
+
+Flag any branch **ahead of `main` with no open PR** — `gh pr list --head "$b"` returns empty. Report it as an **open thread**, not as shipped work. This is the failure mode a roots misconfiguration and a stale window produce together: a pushed-but-un-PR'd branch in an unscanned repo is invisible twice over, and tends to surface only by accident from a hand-written note elsewhere.
+
 ### 2. ~/dev/deliverables/ entries (polish signal)
 
 ```
