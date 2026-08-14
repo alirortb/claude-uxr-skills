@@ -121,17 +121,24 @@ A short list of what's not yet resolved:
 - Delete tasks that are no longer relevant (status: `deleted`)
 - Leave open only what's genuinely carrying into a future session
 
-### 8. Plan / commitment alignment
+### 8. Performance tracking
 
-Read the user's plan-of-record from local memory (the user maintains a private file there describing workstreams, checkpoints, and success criteria — locate it via `MEMORY.md`) and tag the session against it. The plan substance is intentionally not inlined in this file so that this SKILL.md is safe to ship in a public repo; the runtime resolves it from local memory at use-time.
+Tag the session against the user's **live** performance record. Earlier versions of this step tracked a single time-boxed improvement plan; when such a plan closes, the step does **not** retire with it — it becomes ordinary ongoing performance tracking against whatever the current objectives-of-record and review cadence are.
 
-- **Workstream tag** — for any deliverable/decision this session produced, name which workstream/commitment from the plan it counts toward. Primary/secondary tagging is fine when work genuinely counts toward two — name both rather than forcing a single tag.
-- **Competency tag (durable)** — the deliverables log is a durable evidence base that outlives any single plan, so it feeds downstream reporting beyond the current checkpoints (see its `README.md` → "Tiers & promotion cadence"). So also apply the durable **competency tags** from `~/dev/eod-recaps/taxonomy.local.md` (C-Impact/Scope/Craft/Influence/Ownership — currently a placeholder pending a real leveling rubric) to any Deliverables-Log entry this session writes, so it's review-ready, not just checkpoint-ready. The W-tags and competency tags are independent dimensions.
-- **Checkpoint proximity** — days remaining to each upcoming checkpoint in the plan; flag any workstream that looks thin against the plan's targets.
-- **Stakeholder-comms hygiene** — if the session involved a stakeholder meeting or decision: were actions/decisions captured? Were the right people informed? Apply this especially to workstreams the plan tracks for stakeholder communication.
-- **Other-workstream progress** — note progress (or explicit lack of it) for any plan element the deliverables folder doesn't capture (e.g. course chapters, framework proposals).
+Read both from local memory (the user keeps private files there describing the current objectives, the review cadence, and the tagging taxonomy — locate them via `MEMORY.md`; the taxonomy the recap skills read lives at `~/dev/eod-recaps/taxonomy.local.md`). The substance is intentionally **not** inlined here so this SKILL.md stays safe to ship in a public repo; the runtime resolves it at use-time.
 
-Skip explicitly if the session was purely tactical (debug, doc fix) with no plan relevance — but say it by name.
+- **Objective tag** — for any deliverable/decision this session produced, name which current objective it counts toward. Primary/secondary tagging is fine when work genuinely counts toward two — name both rather than forcing a single tag.
+  - **If a plan has closed and its successor objective set isn't yet agreed and recorded in the company system, say so by name and tag competencies only.** Don't keep scoring against the closed plan, don't invent a replacement scheme, and don't report coverage percentages against something that no longer exists. Some tags from a closed plan may survive as named *development areas* rather than as graded progress — the taxonomy file states which; follow it rather than re-deriving it.
+- **Competency tag (durable)** — the deliverables log is a durable evidence base that outlives any single plan or cadence, so it feeds review cycles beyond the current touchpoints (see its `README.md` → "Tiers & promotion cadence"). Apply the durable **competency tags** from the taxonomy file (C-Impact/Scope/Craft/Influence/Ownership — a placeholder pending a real leveling rubric) to any Deliverables-Log entry this session writes, so it's review-ready and not merely touchpoint-ready. Objective tags and competency tags are independent dimensions, and the competency dimension is the one that survives a plan or cadence change — when the objective side is unsettled, this is the tagging that still has to happen.
+- **Cadence proximity** — days remaining to the next review touchpoint the cadence file names, plus any dated commitment inside an objective landing sooner. Flag any objective with no evidence at all this cycle — as thin coverage in words, not as a percentage.
+- **Record hygiene** — where the live process produces a periodic manager judgment (on-track / off-track or equivalent), note whether this session's evidence is captured somewhere durable, and whether the objectives' own records are complete in the company system (due date + status, not just prose). A judgment that exists only as conversation, or an objective with a blank due date, is an **open thread** — surface it in step 6; don't draft the ask unless the user wants it.
+- **Stakeholder-comms hygiene** — if the session involved a stakeholder meeting or decision: were actions/decisions captured? Were the right people informed? Apply this especially to objectives that name stakeholder communication.
+- **Off-objective progress** — note progress (or explicit lack of it) on anything the deliverables folder doesn't capture: course chapters, framework proposals, development-area practice.
+- **History stands — no retroactive re-tagging.** Step-8 entries written while a prior plan was live were correct as of their date, and stay valid as historical record. When reading or rolling up past closeouts, recaps, or deliverables, leave their tags as written: don't translate them into the current scheme, don't restate them as current progress, and don't re-open grading that has closed. A scheme change applies **forward only**, from the date the plan closed.
+
+When the plan-of-record itself changes (a plan closes, a cadence is replaced, objectives are agreed), the fix belongs in the **taxonomy / cadence memory files**, not in this skill — flag the mismatch and let the user re-scheme once, rather than quietly tagging against a stale scheme.
+
+Skip explicitly if the session was purely tactical (debug, doc fix) with nothing worth tagging — but say it by name.
 
 ### 9. Next move
 
@@ -162,7 +169,7 @@ Example shape:
 5. **Git + backup** — branch `<name>` at `<sha>`, pushed to PR #N (state: <state>); off-machine backup verified (or: ⚠️ N unpushed commits unbacked / run cloud sync for <files>).
 6. **Open threads** — <bullet list>
 7. **Tasks** — cleaned (N completed, M deleted, K still active for follow-up).
-8. **Plan alignment** — counts toward <workstream>; <X> days to <next checkpoint>; stakeholder-comms <state>.
+8. **Performance tracking** — counts toward <objective> (or: no agreed objective set yet — competency-only); competency tags <C-tags>; <X> days to <next touchpoint>; stakeholder-comms <state>.
 9. **Next move** — <one concrete sentence with names, paths, numbers>
 
 ---
