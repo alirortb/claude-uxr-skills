@@ -1,6 +1,6 @@
 ---
 name: eow-summary
-description: Generate end-of-week summary by scanning Claude Code transcripts, git activity across the configured scan roots (~/dev/* plus any workspace outside it), ~/dev/deliverables/ entries, and project memory across the current week's weekdays. Use when user invokes "/eow-summary", asks "what did I ship this week", "draft my weekly digest", "summarize this week's work", or when the Friday cron triggers it. Produces a single draft markdown file with three layered sections — personal log, team digest, AI Design Guild candidates — for the user to edit before sharing, plus a lean redacted-by-default CARRY_<date>.md companion for reading on a phone or resuming in another session/device.
+description: Generate end-of-week summary by scanning Claude Code transcripts, git activity across configurable scan roots, ~/dev/deliverables/ entries, and project memory across the current week's weekdays. Use when user invokes "/eow-summary", asks "what did I ship this week", "draft my weekly digest", "summarize this week's work", or when the Friday cron triggers it. Produces a single draft markdown file with three layered sections — personal log, team digest, AI Design Guild candidates — for the user to edit before sharing, plus a lean redacted-by-default CARRY_<date>.md companion for reading on a phone or resuming in another session/device.
 ---
 
 # EOW Summary
@@ -35,35 +35,57 @@ Use ISO timestamps (`YYYY-MM-DD`) when passing to `git log --since`/`--until` an
 
 Run these in parallel where independent.
 
-### 1. Git activity across the scan roots (ground truth for shipped work)
+### 1. Git activity (ground truth for shipped work)
 
-⚠️ **Not every working repo lives under `~/dev`.** This step scanned only `~/dev/*/` until 2026-08-11, which meant any repo outside that glob was **invisible to the weekly** — no commits, no branches, no drift. A real miss: `~/UXR Recruitment` (the workspace producing the recruitment pulls) sat outside the glob, so a pushed-but-un-PR'd branch there went unreported. It surfaced only because a hand-written "no PR yet" note in a deliverables entry happened to be re-read a day later.
+**Scan roots are configurable, and `~/dev/*/` alone is not enough.** Repos that live outside `~/dev` are invisible to a bare glob, and a repo you don't scan reads as a week with no commits rather than a gap in measurement — a silent undercount of authored work, in the one source this skill treats as ground truth.
 
-Scan **every root in the list**, not just `~/dev`:
+Read the roots from `~/dev/eow-summaries/scan-roots.local` when it exists — one shell glob or path per line, `#` for comments — and fall back to `~/dev/*/` when it doesn't. **Quote any path containing a space in that file**; the loader below honours the quotes, and an unquoted `$HOME/My Repo` word-splits into two non-existent paths and is skipped in silence:
 
+```bash
+shopt -s nullglob
+ROOTS_FILE="$HOME/dev/eow-summaries/scan-roots.local"
+[ -f "$ROOTS_FILE" ] || printf '%s\n' '$HOME/dev/*/' > "$ROOTS_FILE"
+while IFS= read -r line; do
+  case "$line" in ""|\#*) continue;; esac
+  eval "paths=($line)"          # array-eval: expands globs, preserves quoted spaces
+  for d in "${paths[@]}"; do
+    [ -d "$d/.git" ] || continue
+    git -C "$d" log --since="$START" --until="$END 23:59" \
+      --pretty=format:'%H|%h|%ad|%s' --date=short --no-merges --all
+  done
+done < "$ROOTS_FILE"
 ```
-SCAN_ROOTS=(~/dev/*/ ~/"UXR Recruitment")   # add any workspace living outside ~/dev
 
-for d in "${SCAN_ROOTS[@]}"; do
-  [ -d "$d/.git" ] || continue
-  git -C "$d" log --since="$START" --until="$END 23:59" \
-    --pretty=format:'%h|%ad|%s' --date=short --no-merges --all
-done
-```
+Run it under `bash`, not `sh` — it needs arrays and `nullglob`. **Print the resolved repo count** before using the results; if it is lower than you expect, a quoting or glob problem swallowed a root rather than the week being quiet.
 
 Drop any line whose date falls on Sat/Sun. Group by repo. Note branches active in the window via `git -C "$d" for-each-ref --sort=-committerdate refs/heads/`.
 
-**Also report branch/PR drift per repo**, not just commits — an un-merged branch is work that shipped without landing, and it is exactly what a `--since` commit scan misses once the commit date falls out of the window:
+**State the roots you scanned in the summary's git section.** If a known repo is absent from the config, say so rather than reporting a total that quietly excludes it.
 
-```
-git -C "$d" for-each-ref --format='%(refname:short)' refs/heads/ | while read b; do
-  [ "$b" = main ] || [ "$b" = master ] && continue
+#### Counting method — pin it, or successive runs will disagree
+
+Report both a repo-wide and an authored count, and derive both the same way every time:
+
+- **Dedup by full commit hash (`%H`), never by subject.** Subjects repeat across branches after a rebase or cherry-pick; hashes don't.
+- **Union mirrored repos before counting; never sum them.** Where one repo mirrors another, the same commit appears in both with the same hash — summing the per-repo rows double-counts every mirrored commit. Concatenate the hash lists, `sort -u`, then count.
+- **Authored = filter on every git identity the user commits under** (`git log --author=` accepts repeated flags, OR'd). A single-identity filter silently drops work committed under the other one; check `git log --pretty=%an\ <%ae> | sort -u` per repo if unsure.
+- **Print the method alongside the number.** Two defensible methods over the same window can differ by 30%+; a bare count with no stated basis cannot be reconciled against last week's.
+
+A worked check that the numbers are internally consistent: per-repo unioned counts must sum to the all-repo deduped total. If they don't, a mirror is being double-counted somewhere.
+
+#### Branch / PR drift — commits are not the whole picture
+
+**Also report branch/PR drift per repo**, not just commits. An un-merged branch is work that shipped without landing, and it is exactly what a `--since` commit scan misses once the branch's commit dates fall out of the window — the week reads as clean while the work sits unlanded:
+
+```bash
+git -C "$d" for-each-ref --format='%(refname:short)' refs/heads/ | while read -r b; do
+  case "$b" in main|master) continue;; esac
   ahead=$(git -C "$d" rev-list --count main.."$b" 2>/dev/null)
   [ "${ahead:-0}" -gt 0 ] && echo "$d $b ahead:$ahead"
 done
 ```
 
-Flag any branch that is **ahead of `main` with no open PR** — `gh pr list --head "$b"` returns empty. Report it as an open thread, not as shipped work.
+Flag any branch **ahead of `main` with no open PR** — `gh pr list --head "$b"` returns empty. Report it as an **open thread**, not as shipped work. This is the failure mode a roots misconfiguration and a stale window produce together: a pushed-but-un-PR'd branch in an unscanned repo is invisible twice over, and tends to surface only by accident from a hand-written note elsewhere.
 
 ### 2. ~/dev/deliverables/ entries (polish signal)
 
@@ -318,6 +340,7 @@ The paste-to-resume block deliberately mirrors the `close-chat` BOOTSTRAP "sessi
 - **Honest about AI role.** When an automation is pure orchestration, say so (Format A house rule).
 - **Weekday-only.** Drop Sat/Sun activity even if a calendar-week range is passed.
 - **Source weighting.** Git is ground truth for what shipped; transcripts are last-resort context.
+- **Never report a git count without its basis.** Hash-deduped, mirrors unioned, roots named. An unqualified commit count cannot be reconciled against the prior week's and will read as a discrepancy.
 - **Don't paste raw transcript content** — synthesize, don't quote.
 - **Read-only on sources.** Never modify git repos, deliverables files, or memory files.
 - **One file per Friday.** Re-runs append, not overwrite.
