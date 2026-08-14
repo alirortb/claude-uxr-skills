@@ -77,15 +77,30 @@ A worked check that the numbers are internally consistent: per-repo unioned coun
 
 **Also report branch/PR drift per repo**, not just commits. An un-merged branch is work that shipped without landing, and it is exactly what a `--since` commit scan misses once the branch's commit dates fall out of the window — the week reads as clean while the work sits unlanded:
 
+**Resolve each repo's default branch — don't hardcode `main`.** A repo whose default is `master` (or anything else) makes `rev-list main..$b` fail; the error goes to `/dev/null`, the count reads as empty, and the repo reports **no drift** when it may have plenty. That is the same failure shape as the roots bug: a measurement gap wearing the costume of a clean result.
+
 ```bash
-git -C "$d" for-each-ref --format='%(refname:short)' refs/heads/ | while read -r b; do
-  case "$b" in main|master) continue;; esac
-  ahead=$(git -C "$d" rev-list --count main.."$b" 2>/dev/null)
-  [ "${ahead:-0}" -gt 0 ] && echo "$d $b ahead:$ahead"
-done
+base=$(git -C "$d" symbolic-ref --quiet --short refs/remotes/origin/HEAD 2>/dev/null)
+base=${base#origin/}
+if [ -z "$base" ]; then
+  for cand in main master trunk; do
+    git -C "$d" rev-parse --verify --quiet "$cand" >/dev/null && { base=$cand; break; }
+  done
+fi
+if [ -z "$base" ]; then
+  echo "$d: SKIPPED — default branch unresolved, drift NOT measured"
+else
+  git -C "$d" for-each-ref --format='%(refname:short)' refs/heads/ | while read -r b; do
+    [ "$b" = "$base" ] && continue
+    ahead=$(git -C "$d" rev-list --count "$base".."$b" 2>/dev/null) || ahead=""
+    [ -n "$ahead" ] && [ "$ahead" -gt 0 ] && echo "$d $b ahead:$ahead (base:$base)"
+  done
+fi
 ```
 
-Flag any branch **ahead of `main` with no open PR** — `gh pr list --head "$b"` returns empty. Report it as an **open thread**, not as shipped work. This is the failure mode a roots misconfiguration and a stale window produce together: a pushed-but-un-PR'd branch in an unscanned repo is invisible twice over, and tends to surface only by accident from a hand-written note elsewhere.
+Flag any branch **ahead of its base with no open PR** — `gh pr list --head "$b"` returns empty. Report it as an **open thread**, not as shipped work. This is the failure mode a roots misconfiguration and a stale window produce together: a pushed-but-un-PR'd branch in an unscanned repo is invisible twice over, and tends to surface only by accident from a hand-written note elsewhere.
+
+**Report the skips.** A `SKIPPED` line is a hole in the measurement and must appear in the summary's git section — never let an unresolved base, or a repo the roots config missed, read as "no drift."
 
 ### 2. ~/dev/deliverables/ entries (polish signal)
 
