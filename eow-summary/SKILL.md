@@ -141,6 +141,29 @@ Drop any whose date is Sat/Sun. Pull the already-tagged items straight through �
 - **Carry redaction forward verbatim.** Items already marked `[private — checkpoint comms]` stay collapsed — never expand them, even though the EOW output is also a draft.
 - **Flag gaps.** If a weekday in the window has no eod-recap file, note it (e.g. "_No eod-recap for Tue 06-03 — Slack-communicated items not captured that day._") so the user knows the Slack layer is partial, not that nothing was said.
 
+### 6. Surface-triage tally (`~/dev/eow-summaries/.surface-triage.jsonl`)
+
+The user's global CLAUDE.md carries a surface-triage rule: a CC session whose first 20 turns produce no file edits, no git ops, and no memory writes "was a Claude.ai session in disguise — flag it in the next /eow-summary." A `SessionEnd` hook (`~/dev/surface-triage-check.sh`) records the verdict per session, because the judgement can't be made from inside the session it's about.
+
+Read the window's lines and count by verdict:
+```
+jq -c --arg s "$START" --arg e "$END" \
+  'select(.date >= $s and .date <= $e)' ~/dev/eow-summaries/.surface-triage.jsonl
+```
+
+Four verdicts, and they are not interchangeable:
+
+| Verdict | Report it as |
+|---|---|
+| `ok` | Nothing to say — productive session |
+| `flag` | **Hit 20 turns, produced nothing.** This is the rule firing |
+| `short` | Not a finding. A brief session, not a misplaced one |
+| `unknown` | Coverage gap — transcript unreadable or over the scan cap |
+
+- **Report `flag` counts, never a `flag` verdict as fact about a specific piece of work.** The signal is "this session should probably have been a web chat", which is a prompt to reconsider surface choice — not evidence about output quality. Give the count, the projects (`cwd`), and leave the read to the user.
+- **Surface `unknown` separately.** A week of `unknown` means the hook is running but seeing nothing, which looks identical to a clean week if you fold them together.
+- **No tally file, or no lines in the window, is not "zero flagged sessions."** It means the hook didn't run — say so, the same way a missing eod-recap file is reported as a gap rather than silence.
+
 ## Classification rubric
 
 For each project cluster, classify the week's work:
@@ -177,6 +200,11 @@ Everything touched this week, by project. One bullet per project; sub-bullets fo
   - Decisions: <one-liners>
   - Commitments: <open [commitment]/[action] items from eod-recaps — who it's to + by when>
   - Blockers: <if any>
+
+**Surface triage** _(from the SessionEnd tally — sessions that may have belonged in web chat)_
+- <N> of <total> sessions flagged: 20+ turns, no edits / git / memory writes — <projects>
+- <N> unknown (hook ran, transcript unreadable) · omit this line at zero
+- _If the tally has no lines in the window: "No surface-triage data — the SessionEnd hook didn't record this week."_
 
 ## 2. Team digest
 
